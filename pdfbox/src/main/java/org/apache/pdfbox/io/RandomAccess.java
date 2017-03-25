@@ -22,7 +22,6 @@ package org.apache.pdfbox.io;
  *
  * @author Ben Litchfield
  */
-public interface RandomAccess extends RandomAccessRead, RandomAccessWrite
-{
-    // super interface for both read and write
+public interface RandomAccess extends RandomAccessRead, RandomAccessWrite {
+  // super interface for both read and write
 }

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * 
+ *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,18 +7,17 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- * 
+ *
  ****************************************************************************/
-
 package org.apache.pdfbox.pdfparser;
 
 import static org.junit.Assert.assertEquals;
@@ -38,93 +37,78 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestPDFParser
-{
+public class TestPDFParser {
+  private static final String PATH_OF_PDF = "src/test/resources/input/yaddatest.pdf";
+  private static final File tmpDirectory = new File(System.getProperty("java.io.tmpdir"));
+  private int numberOfTmpFiles = 0;
 
-    private static final String PATH_OF_PDF = "src/test/resources/input/yaddatest.pdf";
-    private static final File tmpDirectory = new File(System.getProperty("java.io.tmpdir"));
+  /**
+   * Initialize the number of tmp file before the test
+   *
+   * @throws Exception
+   */
+  @Before
+  public void setUp() throws Exception {
+    numberOfTmpFiles = getNumberOfTempFile();
+  }
 
-    private int numberOfTmpFiles = 0;
+  /**
+   * Count the number of temporary files
+   *
+   * @return
+   */
+  private int getNumberOfTempFile() {
+    int result = 0;
+    File[] tmpPdfs = tmpDirectory.listFiles(new FilenameFilter() {
+      @Override
+      public boolean accept(File dir, String name) {
+        return name.startsWith(COSParser.TMP_FILE_PREFIX) && name.endsWith("pdf");
+      }
+    });
 
-    /**
-     * Initialize the number of tmp file before the test
-     * 
-     * @throws Exception
-     */
-    @Before
-    public void setUp() throws Exception
-    {
-        numberOfTmpFiles = getNumberOfTempFile();
+    if (tmpPdfs != null) {
+      result = tmpPdfs.length;
     }
 
-    /**
-     * Count the number of temporary files
-     * 
-     * @return
-     */
-    private int getNumberOfTempFile()
-    {
-        int result = 0;
-        File[] tmpPdfs = tmpDirectory.listFiles(new FilenameFilter()
-        {
-            @Override
-            public boolean accept(File dir, String name)
-            {
-                return name.startsWith(COSParser.TMP_FILE_PREFIX)
-                        && name.endsWith("pdf");
-            }
-        });
+    return result;
+  }
 
-        if (tmpPdfs != null)
-        {
-            result = tmpPdfs.length;
-        }
+  @Test
+  public void testPDFParserFile() throws IOException {
+    executeParserTest(new RandomAccessBufferedFileInputStream(new File(PATH_OF_PDF)), MemoryUsageSetting.setupMainMemoryOnly());
+  }
 
-        return result;
-    }
+  @Test
+  public void testPDFParserInputStream() throws IOException {
+    executeParserTest(new RandomAccessBufferedFileInputStream(new FileInputStream(PATH_OF_PDF)), MemoryUsageSetting.setupMainMemoryOnly());
+  }
 
-    @Test
-    public void testPDFParserFile() throws IOException
-    {
-        executeParserTest(new RandomAccessBufferedFileInputStream(new File(PATH_OF_PDF)), MemoryUsageSetting.setupMainMemoryOnly());
-    }
+  @Test
+  public void testPDFParserFileScratchFile() throws IOException {
+    executeParserTest(new RandomAccessBufferedFileInputStream(new File(PATH_OF_PDF)), MemoryUsageSetting.setupTempFileOnly());
+  }
 
-    @Test
-    public void testPDFParserInputStream() throws IOException
-    {
-        executeParserTest(new RandomAccessBufferedFileInputStream(new FileInputStream(PATH_OF_PDF)), MemoryUsageSetting.setupMainMemoryOnly());
-    }
+  @Test
+  public void testPDFParserInputStreamScratchFile() throws IOException {
+    executeParserTest(new RandomAccessBufferedFileInputStream(new FileInputStream(PATH_OF_PDF)), MemoryUsageSetting.setupTempFileOnly());
+  }
 
-    @Test
-    public void testPDFParserFileScratchFile() throws IOException
-    {
-        executeParserTest(new RandomAccessBufferedFileInputStream(new File(PATH_OF_PDF)), MemoryUsageSetting.setupTempFileOnly());
-    }
+  @Test
+  public void testPDFParserMissingCatalog() throws IOException {
+    // PDFBOX-3060
+    PDDocument.load(TestPDFParser.class.getResourceAsStream("MissingCatalog.pdf")).close();
+  }
 
-    @Test
-    public void testPDFParserInputStreamScratchFile() throws IOException
-    {
-        executeParserTest(new RandomAccessBufferedFileInputStream(new FileInputStream(PATH_OF_PDF)), MemoryUsageSetting.setupTempFileOnly());
-    }
-    
-    @Test
-    public void testPDFParserMissingCatalog() throws IOException
-    {
-        // PDFBOX-3060
-        PDDocument.load(TestPDFParser.class.getResourceAsStream("MissingCatalog.pdf")).close();        
-    }
-
-    private void executeParserTest(RandomAccessRead source, MemoryUsageSetting memUsageSetting) throws IOException
-    {
-        ScratchFile scratchFile = new ScratchFile(memUsageSetting);
-        PDFParser pdfParser = new PDFParser(source, scratchFile);
-        pdfParser.parse();
-        COSDocument doc = pdfParser.getDocument();
-        assertNotNull(doc);
-        doc.close();
-        source.close();
-        // number tmp file must be the same
-        assertEquals(numberOfTmpFiles, getNumberOfTempFile());
-    }
+  private void executeParserTest(RandomAccessRead source, MemoryUsageSetting memUsageSetting) throws IOException {
+    ScratchFile scratchFile = new ScratchFile(memUsageSetting);
+    PDFParser pdfParser = new PDFParser(source, scratchFile);
+    pdfParser.parse();
+    COSDocument doc = pdfParser.getDocument();
+    assertNotNull(doc);
+    doc.close();
+    source.close();
+    // number tmp file must be the same
+    assertEquals(numberOfTmpFiles, getNumberOfTempFile());
+  }
 
 }
