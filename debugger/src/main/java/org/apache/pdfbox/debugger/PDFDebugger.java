@@ -214,6 +214,7 @@ public class PDFDebugger extends JFrame {
         filename = args[i];
       }
     }
+    filename = "/home/data/work/pdfxx_m.pdf";
     final PDFDebugger viewer = new PDFDebugger(viewPages);
 
     if (filename != null) {

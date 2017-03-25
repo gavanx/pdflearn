@@ -81,6 +81,9 @@ public class PDFTreeCellRenderer extends DefaultTreeCellRenderer {
       if (nodeValue instanceof MapEntry) {
         MapEntry entry = (MapEntry) nodeValue;
         key = entry.getKey().getName();
+        if(key.equals("Trn3dK9")){
+          int x = 1;
+        }
         object = toTreeObject(entry.getValue());
         value = entry.getValue();
         item = entry.getItem();
