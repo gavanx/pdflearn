@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.pdmodel;
 
 /**
@@ -22,67 +21,42 @@ package org.apache.pdfbox.pdmodel;
  *
  * @author John Hewson
  */
-public enum PageLayout
-{
-    /** Display one page at a time. */
-    SINGLE_PAGE("SinglePage"),
+public enum PageLayout {
+  /** Display one page at a time. */
+  SINGLE_PAGE("SinglePage"), /** Display the pages in one column. */
+  ONE_COLUMN("OneColumn"), /** Display the pages in two columns), with odd numbered pages on the left. */
+  TWO_COLUMN_LEFT("TwoColumnLeft"), /** Display the pages in two columns), with odd numbered pages on the right. */
+  TWO_COLUMN_RIGHT("TwoColumnRight"), /** Display the pages two at a time), with odd-numbered pages on the left. */
+  TWO_PAGE_LEFT("TwoPageLeft"), /** Display the pages two at a time), with odd-numbered pages on the right. */
+  TWO_PAGE_RIGHT("TwoPageRight");
 
-    /**  Display the pages in one column. */
-    ONE_COLUMN("OneColumn"),
-
-    /** Display the pages in two columns), with odd numbered pages on the left. */
-    TWO_COLUMN_LEFT("TwoColumnLeft"),
-
-    /** Display the pages in two columns), with odd numbered pages on the right.  */
-    TWO_COLUMN_RIGHT("TwoColumnRight"),
-
-    /** Display the pages two at a time), with odd-numbered pages on the left. */
-    TWO_PAGE_LEFT("TwoPageLeft"),
-
-    /** Display the pages two at a time), with odd-numbered pages on the right. */
-    TWO_PAGE_RIGHT("TwoPageRight");
-
-    public static PageLayout fromString(String value)
-    {
-        if (value.equals("SinglePage"))
-        {
-            return SINGLE_PAGE;
-        }
-        else if (value.equals("OneColumn"))
-        {
-            return ONE_COLUMN;
-        }
-        else if (value.equals("TwoColumnLeft"))
-        {
-            return TWO_COLUMN_LEFT;
-        }
-        else if (value.equals("TwoColumnRight"))
-        {
-            return TWO_COLUMN_RIGHT;
-        }
-        else if (value.equals("TwoPageLeft"))
-        {
-            return TWO_PAGE_LEFT;
-        }
-        else if (value.equals("TwoPageRight"))
-        {
-            return TWO_PAGE_RIGHT;
-        }
-        throw new IllegalArgumentException(value);
+  public static PageLayout fromString(String value) {
+    if (value.equals("SinglePage")) {
+      return SINGLE_PAGE;
+    } else if (value.equals("OneColumn")) {
+      return ONE_COLUMN;
+    } else if (value.equals("TwoColumnLeft")) {
+      return TWO_COLUMN_LEFT;
+    } else if (value.equals("TwoColumnRight")) {
+      return TWO_COLUMN_RIGHT;
+    } else if (value.equals("TwoPageLeft")) {
+      return TWO_PAGE_LEFT;
+    } else if (value.equals("TwoPageRight")) {
+      return TWO_PAGE_RIGHT;
     }
+    throw new IllegalArgumentException(value);
+  }
 
-    private final String value;
+  private final String value;
 
-    PageLayout(String value)
-    {
-        this.value = value;
-    }
+  PageLayout(String value) {
+    this.value = value;
+  }
 
-    /**
-     * Returns the string value, as used in a PDF file.
-     */
-    public String stringValue()
-    {
-        return value;
-    }
+  /**
+   * Returns the string value, as used in a PDF file.
+   */
+  public String stringValue() {
+    return value;
+  }
 }

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.rendering;
 
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -23,36 +22,32 @@ import org.apache.pdfbox.pdmodel.PDPage;
  * Parameters for a PageDrawer. This class ensures allows PDFRenderer and PageDrawer to share
  * private implementation data in a future-proof manner, while still allowing end-users to create
  * their own subclasses of PageDrawer.
- * 
+ *
  * @author John Hewson
  */
-public final class PageDrawerParameters
-{
-    private final PDFRenderer renderer;
-    private final PDPage page;
+public final class PageDrawerParameters {
+  private final PDFRenderer renderer;
+  private final PDPage page;
 
-    /**
-     * Package-private constructor.
-     */
-    PageDrawerParameters(PDFRenderer renderer, PDPage page)
-    {
-        this.renderer = renderer;
-        this.page = page;
-    }
+  /**
+   * Package-private constructor.
+   */
+  PageDrawerParameters(PDFRenderer renderer, PDPage page) {
+    this.renderer = renderer;
+    this.page = page;
+  }
 
-    /**
-     * Returns the page.
-     */
-    public PDPage getPage()
-    {
-        return page;
-    }
-    
-    /**
-     * Returns the renderer.
-     */
-    PDFRenderer getRenderer()
-    {
-        return renderer;
-    }
+  /**
+   * Returns the page.
+   */
+  public PDPage getPage() {
+    return page;
+  }
+
+  /**
+   * Returns the renderer.
+   */
+  PDFRenderer getRenderer() {
+    return renderer;
+  }
 }

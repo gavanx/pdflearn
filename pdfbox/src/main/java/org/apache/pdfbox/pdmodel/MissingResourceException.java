@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.pdmodel;
 
 import java.io.IOException;
@@ -22,10 +21,8 @@ import java.io.IOException;
 /**
  * Thrown when a named resource is missing.
  */
-public final class MissingResourceException extends IOException
-{
-    public MissingResourceException(String message)
-    {
-        super(message);
-    }
+public final class MissingResourceException extends IOException {
+  public MissingResourceException(String message) {
+    super(message);
+  }
 }
