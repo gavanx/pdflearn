@@ -36,12 +36,9 @@ import org.apache.xmpbox.xml.XmpParsingException;
 
 /**
  * This is an example on how to extract metadata from a PDF document.
- * 
  */
-public final class ExtractMetadata
-{
-    private ExtractMetadata()
-    {
+public final class ExtractMetadata {
+    private ExtractMetadata() {
         // utility class
     }
 
@@ -49,35 +46,26 @@ public final class ExtractMetadata
      * This is the main method.
      *
      * @param args The command line arguments.
-     *
-     * @throws IOException If there is an error parsing the document.
+     * @throws IOException         If there is an error parsing the document.
      * @throws XmpParsingException
      */
-    public static void main(String[] args) throws IOException, XmpParsingException
-    {
-        if (args.length != 1)
-        {
+    public static void main(String[] args) throws IOException, XmpParsingException {
+        if (args.length != 1) {
             usage();
             System.exit(1);
-        }
-        else
-        {
+        } else {
             PDDocument document = null;
-            try
-            {
+            try {
                 document = PDDocument.load(new File(args[0]));
                 PDDocumentCatalog catalog = document.getDocumentCatalog();
                 PDMetadata meta = catalog.getMetadata();
-                if (meta != null)
-                {
+                if (meta != null) {
                     DomXmpParser xmpParser = new DomXmpParser();
-                    try
-                    {
+                    try {
                         XMPMetadata metadata = xmpParser.parse(meta.createInputStream());
 
                         DublinCoreSchema dc = metadata.getDublinCoreSchema();
-                        if (dc != null)
-                        {
+                        if (dc != null) {
                             display("Title:", dc.getTitle());
                             display("Description:", dc.getDescription());
                             listString("Creators: ", dc.getCreators());
@@ -86,51 +74,40 @@ public final class ExtractMetadata
                         }
 
                         AdobePDFSchema pdf = metadata.getAdobePDFSchema();
-                        if (pdf != null)
-                        {
+                        if (pdf != null) {
                             display("Keywords:", pdf.getKeywords());
                             display("PDF Version:", pdf.getPDFVersion());
                             display("PDF Producer:", pdf.getProducer());
                         }
 
                         XMPBasicSchema basic = metadata.getXMPBasicSchema();
-                        if (basic != null)
-                        {
+                        if (basic != null) {
                             display("Create Date:", basic.getCreateDate());
                             display("Modify Date:", basic.getModifyDate());
                             display("Creator Tool:", basic.getCreatorTool());
                         }
-                    }
-                    catch (XmpParsingException e)
-                    {
+                    } catch (XmpParsingException e) {
                         System.err.println("An error ouccred when parsing the meta data: "
                                 + e.getMessage());
                     }
-                }
-                else
-                {
+                } else {
                     // The pdf doesn't contain any metadata, try to use the
                     // document information instead
                     PDDocumentInformation information = document.getDocumentInformation();
-                    if (information != null)
-                    {
+                    if (information != null) {
                         showDocumentInformation(information);
                     }
                 }
 
-            }
-            finally
-            {
-                if (document != null)
-                {
+            } finally {
+                if (document != null) {
                     document.close();
                 }
             }
         }
     }
 
-    private static void showDocumentInformation(PDDocumentInformation information)
-    {
+    private static void showDocumentInformation(PDDocumentInformation information) {
         display("Title:", information.getTitle());
         display("Subject:", information.getSubject());
         display("Author:", information.getAuthor());
@@ -138,49 +115,37 @@ public final class ExtractMetadata
         display("Producer:", information.getProducer());
     }
 
-    private static void listString(String title, List<String> list)
-    {
-        if (list == null)
-        {
+    private static void listString(String title, List<String> list) {
+        if (list == null) {
             return;
         }
         System.out.println(title);
-        for (String string : list)
-        {
+        for (String string : list) {
             System.out.println("  " + string);
         }
     }
 
-    private static void listCalendar(String title, List<Calendar> list)
-    {
-        if (list == null)
-        {
+    private static void listCalendar(String title, List<Calendar> list) {
+        if (list == null) {
             return;
         }
         System.out.println(title);
-        for (Calendar calendar : list)
-        {
+        for (Calendar calendar : list) {
             System.out.println("  " + format(calendar));
         }
     }
 
-    private static String format(Object o)
-    {
-        if (o instanceof Calendar)
-        {
+    private static String format(Object o) {
+        if (o instanceof Calendar) {
             Calendar cal = (Calendar) o;
             return DateFormat.getDateInstance().format(cal.getTime());
-        }
-        else
-        {
+        } else {
             return o.toString();
         }
     }
 
-    private static void display(String title, Object value)
-    {
-        if (value != null)
-        {
+    private static void display(String title, Object value) {
+        if (value != null) {
             System.out.println(title + " " + format(value));
         }
     }
@@ -188,8 +153,7 @@ public final class ExtractMetadata
     /**
      * This will print the usage for this program.
      */
-    private static void usage()
-    {
+    private static void usage() {
         System.err.println("Usage: java " + ExtractMetadata.class.getName() + " <input-pdf>");
     }
 }

@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
@@ -35,12 +36,12 @@ import org.apache.xmpbox.xml.XmpSerializer;
 import java.util.Calendar;
 import java.util.List;
 import javax.xml.transform.TransformerException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.io.IOUtils;
 
 /**
- *
  * This example demonstrates the use of the new methods {@link PDFMergerUtility#setDestinationDocumentInformation(org.apache.pdfbox.pdmodel.PDDocumentInformation)
  * } and {@link PDFMergerUtility#setDestinationMetadata(org.apache.pdfbox.pdmodel.common.PDMetadata)
  * } that were added in April 2016. These allow to control the meta data in a merge without having
@@ -48,8 +49,7 @@ import org.apache.pdfbox.io.IOUtils;
  *
  * @author Alexander Kriegisch
  */
-public class PDFMergerExample
-{
+public class PDFMergerExample {
     private static final Log LOG = LogFactory.getLog(PDFMergerExample.class);
 
     /**
@@ -62,16 +62,14 @@ public class PDFMergerExample
      * @return compound PDF document as a readable input stream.
      * @throws IOException if anything goes wrong during PDF merge.
      */
-    public InputStream merge(final List<InputStream> sources) throws IOException
-    {
+    public InputStream merge(final List<InputStream> sources) throws IOException {
         String title = "My title";
         String creator = "Alexander Kriegisch";
         String subject = "Subject with umlauts ÄÖÜ";
 
         ByteArrayOutputStream mergedPDFOutputStream = null;
         COSStream cosStream = null;
-        try
-        {
+        try {
             // If you're merging in a servlet, you can modify this example to use the outputStream only
             // as the response as shown here: http://stackoverflow.com/a/36894346/535646
             mergedPDFOutputStream = new ByteArrayOutputStream();
@@ -90,19 +88,12 @@ public class PDFMergerExample
             LOG.info("PDF merge successful, size = {" + mergedPDFOutputStream.size() + "} bytes");
 
             return new ByteArrayInputStream(mergedPDFOutputStream.toByteArray());
-        }
-        catch (BadFieldValueException e)
-        {
+        } catch (BadFieldValueException e) {
             throw new IOException("PDF merge problem", e);
-        }
-        catch (TransformerException e)
-        {
+        } catch (TransformerException e) {
             throw new IOException("PDF merge problem", e);
-        }
-        finally
-        {
-            for (InputStream source : sources)
-            {
+        } finally {
+            for (InputStream source : sources) {
                 IOUtils.closeQuietly(source);
             }
             IOUtils.closeQuietly(cosStream);
@@ -110,8 +101,7 @@ public class PDFMergerExample
         }
     }
 
-    private PDFMergerUtility createPDFMergerUtility(List<InputStream> sources, ByteArrayOutputStream mergedPDFOutputStream)
-    {
+    private PDFMergerUtility createPDFMergerUtility(List<InputStream> sources, ByteArrayOutputStream mergedPDFOutputStream) {
         LOG.info("Initialising PDF merge utility");
         PDFMergerUtility pdfMerger = new PDFMergerUtility();
         pdfMerger.addSources(sources);
@@ -119,8 +109,7 @@ public class PDFMergerExample
         return pdfMerger;
     }
 
-    private PDDocumentInformation createPDFDocumentInfo(String title, String creator, String subject)
-    {
+    private PDDocumentInformation createPDFDocumentInfo(String title, String creator, String subject) {
         LOG.info("Setting document info (title, author, subject) for merged PDF");
         PDDocumentInformation documentInformation = new PDDocumentInformation();
         documentInformation.setTitle(title);
@@ -130,8 +119,7 @@ public class PDFMergerExample
     }
 
     private PDMetadata createXMPMetadata(COSStream cosStream, String title, String creator, String subject)
-            throws BadFieldValueException, TransformerException, IOException
-    {
+        throws BadFieldValueException, TransformerException, IOException {
         LOG.info("Setting XMP metadata (title, author, subject) for merged PDF");
         XMPMetadata xmpMetadata = XMPMetadata.createXMPMetadata();
 
@@ -157,16 +145,13 @@ public class PDFMergerExample
         // Create and return XMP data structure in XML format
         ByteArrayOutputStream xmpOutputStream = null;
         OutputStream cosXMPStream = null;
-        try
-        {
+        try {
             xmpOutputStream = new ByteArrayOutputStream();
             cosXMPStream = cosStream.createOutputStream();
             new XmpSerializer().serialize(xmpMetadata, xmpOutputStream, true);
             cosXMPStream.write(xmpOutputStream.toByteArray());
             return new PDMetadata(cosStream);
-        }
-        finally
-        {
+        } finally {
             IOUtils.closeQuietly(xmpOutputStream);
             IOUtils.closeQuietly(cosXMPStream);
         }

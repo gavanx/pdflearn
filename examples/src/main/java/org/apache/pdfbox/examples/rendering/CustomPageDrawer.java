@@ -29,6 +29,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+
 import org.apache.pdfbox.contentstream.PDFGraphicsStreamEngine;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -42,20 +43,18 @@ import org.apache.pdfbox.util.Vector;
 
 /**
  * Example showing custom rendering by subclassing PageDrawer.
- * 
+ * <p>
  * <p>If you want to do custom graphics processing rather than Graphics2D rendering, then you should
  * subclass {@link PDFGraphicsStreamEngine} instead. Subclassing PageDrawer is only suitable for
  * cases where the goal is to render onto a Graphics2D surface.
  *
  * @author John Hewson
  */
-public class CustomPageDrawer
-{
-    public static void main(String[] args) throws IOException
-    {
-        File file = new File("src/main/resources/org/apache/pdfbox/examples/rendering/",
-                             "custom-render-demo.pdf");
-        
+public class CustomPageDrawer {
+    public static void main(String[] args) throws IOException {
+        File file = new File("/home/data/work/sharp/nw/pdf/pdfbox/examples/src/main/resources/org/apache/pdfbox/examples/rendering/",
+            "custom-render-demo.pdf");
+
         PDDocument doc = PDDocument.load(file);
         PDFRenderer renderer = new MyPDFRenderer(doc);
         BufferedImage image = renderer.renderImage(0);
@@ -66,16 +65,13 @@ public class CustomPageDrawer
     /**
      * Example PDFRenderer subclass, uses MyPageDrawer for custom rendering.
      */
-    private static class MyPDFRenderer extends PDFRenderer
-    {
-        MyPDFRenderer(PDDocument document)
-        {
+    private static class MyPDFRenderer extends PDFRenderer {
+        MyPDFRenderer(PDDocument document) {
             super(document);
         }
 
         @Override
-        protected PageDrawer createPageDrawer(PageDrawerParameters parameters) throws IOException
-        {
+        protected PageDrawer createPageDrawer(PageDrawerParameters parameters) throws IOException {
             return new MyPageDrawer(parameters);
         }
     }
@@ -83,10 +79,8 @@ public class CustomPageDrawer
     /**
      * Example PageDrawer subclass with custom rendering.
      */
-    private static class MyPageDrawer extends PageDrawer
-    {
-        MyPageDrawer(PageDrawerParameters parameters) throws IOException
-        {
+    private static class MyPageDrawer extends PageDrawer {
+        MyPageDrawer(PageDrawerParameters parameters) throws IOException {
             super(parameters);
         }
 
@@ -94,14 +88,11 @@ public class CustomPageDrawer
          * Color replacement.
          */
         @Override
-        protected Paint getPaint(PDColor color) throws IOException
-        {
+        protected Paint getPaint(PDColor color) throws IOException {
             // if this is the non-stroking color
-            if (getGraphicsState().getNonStrokingColor() == color)
-            {
+            if (getGraphicsState().getNonStrokingColor() == color) {
                 // find red, ignoring alpha channel
-                if (color.toRGB() == (Color.RED.getRGB() & 0x00FFFFFF))
-                {
+                if (color.toRGB() == (Color.RED.getRGB() & 0x00FFFFFF)) {
                     // replace it with blue
                     return Color.BLUE;
                 }
@@ -114,16 +105,15 @@ public class CustomPageDrawer
          */
         @Override
         protected void showGlyph(Matrix textRenderingMatrix, PDFont font, int code, String unicode,
-                                 Vector displacement) throws IOException
-        {
+                                 Vector displacement) throws IOException {
             // draw glyph
             super.showGlyph(textRenderingMatrix, font, code, unicode, displacement);
-            
+
             // bbox in EM -> user units
             Shape bbox = new Rectangle2D.Float(0, 0, font.getWidth(code) / 1000, 1);
             AffineTransform at = textRenderingMatrix.createAffineTransform();
             bbox = at.createTransformedShape(bbox);
-            
+
             // save
             Graphics2D graphics = getGraphics();
             Color color = graphics.getColor();
@@ -146,14 +136,13 @@ public class CustomPageDrawer
          * Filled path bounding boxes.
          */
         @Override
-        public void fillPath(int windingRule) throws IOException
-        {
+        public void fillPath(int windingRule) throws IOException {
             // bbox in user units
             Shape bbox = getLinePath().getBounds2D();
-            
+
             // draw path (note that getLinePath() is now reset)
             super.fillPath(windingRule);
-            
+
             // save
             Graphics2D graphics = getGraphics();
             Color color = graphics.getColor();
@@ -176,15 +165,14 @@ public class CustomPageDrawer
          * Custom annotation rendering.
          */
         @Override
-        public void showAnnotation(PDAnnotation annotation) throws IOException
-        {
+        public void showAnnotation(PDAnnotation annotation) throws IOException {
             // save
             saveGraphicsState();
-            
+
             // 35% alpha
             getGraphicsState().setNonStrokeAlphaConstant(0.35);
             super.showAnnotation(annotation);
-            
+
             // restore
             restoreGraphicsState();
         }

@@ -33,8 +33,7 @@ import org.apache.tools.ant.types.FileSet;
  *
  * @author Ben Litchfield
  */
-public class PDFToTextTask extends Task
-{
+public class PDFToTextTask extends Task {
     private final List<FileSet> fileSets = new ArrayList<FileSet>();
 
     /**
@@ -42,40 +41,32 @@ public class PDFToTextTask extends Task
      *
      * @param set Another fileset to add.
      */
-    public void addFileset( FileSet set )
-    {
-        fileSets.add( set );
+    public void addFileset(FileSet set) {
+        fileSets.add(set);
     }
 
     /**
      * This will perform the execution.
      */
     @Override
-    public void execute()
-    {
-        log( "PDFToTextTask executing" );
+    public void execute() {
+        log("PDFToTextTask executing");
 
-        for (FileSet fileSet : fileSets)
-        {
+        for (FileSet fileSet : fileSets) {
             DirectoryScanner dirScanner = fileSet.getDirectoryScanner(getProject());
             dirScanner.scan();
             String[] files = dirScanner.getIncludedFiles();
-            for (String file : files)
-            {
+            for (String file : files) {
                 File f = new File(dirScanner.getBasedir(), file);
-                log( "processing: " + f.getAbsolutePath() );
+                log("processing: " + f.getAbsolutePath());
                 String pdfFile = f.getAbsolutePath();
-                if( pdfFile.toUpperCase().endsWith( ".PDF" ) )
-                {
-                    String textFile = pdfFile.substring( 0, pdfFile.length() -3 );
+                if (pdfFile.toUpperCase().endsWith(".PDF")) {
+                    String textFile = pdfFile.substring(0, pdfFile.length() - 3);
                     textFile = textFile + "txt";
-                    try
-                    {
+                    try {
                         ExtractText.main(new String[]{pdfFile, textFile});
-                    }
-                    catch( Exception e )
-                    {
-                        log( "Error processing " + pdfFile + e.getMessage() );
+                    } catch (Exception e) {
+                        log("Error processing " + pdfFile + e.getMessage());
                     }
                 }
             }

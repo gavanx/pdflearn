@@ -43,15 +43,13 @@ import org.apache.pdfbox.contentstream.operator.state.SetMatrix;
  *
  * @author Ben Litchfield
  */
-public class PrintImageLocations extends PDFStreamEngine
-{
+public class PrintImageLocations extends PDFStreamEngine {
     /**
      * Default constructor.
      *
      * @throws IOException If there is an error loading text stripper properties.
      */
-    public PrintImageLocations() throws IOException
-    {
+    public PrintImageLocations() throws IOException {
         addOperator(new Concatenate());
         addOperator(new DrawObject());
         addOperator(new SetGraphicsStateParameters());
@@ -64,34 +62,24 @@ public class PrintImageLocations extends PDFStreamEngine
      * This will print the documents data.
      *
      * @param args The command line arguments.
-     *
      * @throws IOException If there is an error parsing the document.
      */
-    public static void main( String[] args ) throws IOException
-    {
-        if( args.length != 1 )
-        {
+    public static void main(String[] args) throws IOException {
+        if (args.length != 1) {
             usage();
-        }
-        else
-        {
+        } else {
             PDDocument document = null;
-            try
-            {
-                document = PDDocument.load( new File(args[0]) );
+            try {
+                document = PDDocument.load(new File(args[0]));
                 PrintImageLocations printer = new PrintImageLocations();
                 int pageNum = 0;
-                for( PDPage page : document.getPages() )
-                {
+                for (PDPage page : document.getPages()) {
                     pageNum++;
-                    System.out.println( "Processing page: " + pageNum );
+                    System.out.println("Processing page: " + pageNum);
                     printer.processPage(page);
                 }
-            }
-            finally
-            {
-                if( document != null )
-                {
+            } finally {
+                if (document != null) {
                     document.close();
                 }
             }
@@ -103,25 +91,21 @@ public class PrintImageLocations extends PDFStreamEngine
      *
      * @param operator The operation to perform.
      * @param operands The list of arguments.
-     *
      * @throws IOException If there is an error processing the operation.
      */
     @Override
-    protected void processOperator( Operator operator, List<COSBase> operands) throws IOException
-    {
+    protected void processOperator(Operator operator, List<COSBase> operands) throws IOException {
         String operation = operator.getName();
-        if( "Do".equals(operation) )
-        {
-            COSName objectName = (COSName) operands.get( 0 );
-            PDXObject xobject = getResources().getXObject( objectName );
-            if( xobject instanceof PDImageXObject)
-            {
-                PDImageXObject image = (PDImageXObject)xobject;
+        if ("Do".equals(operation)) {
+            COSName objectName = (COSName) operands.get(0);
+            PDXObject xobject = getResources().getXObject(objectName);
+            if (xobject instanceof PDImageXObject) {
+                PDImageXObject image = (PDImageXObject) xobject;
                 int imageWidth = image.getWidth();
                 int imageHeight = image.getHeight();
                 System.out.println("*******************************************************************");
                 System.out.println("Found image [" + objectName.getName() + "]");
-        
+
                 Matrix ctmNew = getGraphicsState().getCurrentTransformationMatrix();
                 float imageXScale = ctmNew.getScalingFactorX();
                 float imageYScale = ctmNew.getScalingFactorY();
@@ -141,25 +125,20 @@ public class PrintImageLocations extends PDFStreamEngine
                 imageYScale *= 25.4;
                 System.out.println("displayed size  = " + imageXScale + ", " + imageYScale + " in millimeters at 72 dpi rendering");
                 System.out.println();
-            }
-            else if(xobject instanceof PDFormXObject)
-            {
-                PDFormXObject form = (PDFormXObject)xobject;
+            } else if (xobject instanceof PDFormXObject) {
+                PDFormXObject form = (PDFormXObject) xobject;
                 showForm(form);
             }
-        }
-        else
-        {
-            super.processOperator( operator, operands);
+        } else {
+            super.processOperator(operator, operands);
         }
     }
 
     /**
      * This will print the usage for this document.
      */
-    private static void usage()
-    {
-        System.err.println( "Usage: java " + PrintImageLocations.class.getName() + " <input-pdf>" );
+    private static void usage() {
+        System.err.println("Usage: java " + PrintImageLocations.class.getName() + " <input-pdf>");
     }
 
 }

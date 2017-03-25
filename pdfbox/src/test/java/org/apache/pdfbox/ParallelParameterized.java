@@ -29,60 +29,50 @@ import java.util.concurrent.TimeUnit;
  *
  * @see {http://goo.gl/lkigES}
  */
-public class ParallelParameterized extends Parameterized
-{
-    private static class FixedThreadPoolScheduler implements RunnerScheduler
-    {
-        private final ExecutorService executorService;
-        private final long timeoutSeconds;
+public class ParallelParameterized extends Parameterized {
+  private static class FixedThreadPoolScheduler implements RunnerScheduler {
+    private final ExecutorService executorService;
+    private final long timeoutSeconds;
 
-        FixedThreadPoolScheduler(long timeoutSeconds)
-        {
-            this.timeoutSeconds = timeoutSeconds;
-            int cores = Runtime.getRuntime().availableProcessors();
+    FixedThreadPoolScheduler(long timeoutSeconds) {
+      this.timeoutSeconds = timeoutSeconds;
+      int cores = Runtime.getRuntime().availableProcessors();
 
-            // for debugging
-            System.out.println("JDK: " + System.getProperty("java.runtime.name"));
-            System.out.println("Version: " + System.getProperty("java.specification.version"));
+      // for debugging
+      System.out.println("JDK: " + System.getProperty("java.runtime.name"));
+      System.out.println("Version: " + System.getProperty("java.specification.version"));
 
-            // workaround Open JDK 6 bug which causes CMMException: Invalid profile data
-            if (System.getProperty("java.runtime.name").equals("OpenJDK Runtime Environment") &&
-                System.getProperty("java.specification.version").equals("1.6"))
-            {
-                cores = 1;
-            }
+      // workaround Open JDK 6 bug which causes CMMException: Invalid profile data
+      if (System.getProperty("java.runtime.name").equals("OpenJDK Runtime Environment") &&
+        System.getProperty("java.specification.version").equals("1.6")) {
+        cores = 1;
+      }
 
-            executorService = Executors.newFixedThreadPool(cores);
-        }
-
-        @Override 
-        public void finished()
-        {
-            executorService.shutdown();
-            try
-            {
-                executorService.awaitTermination(timeoutSeconds, TimeUnit.SECONDS);
-            }
-            catch (InterruptedException exc)
-            {
-                throw new RuntimeException(exc);
-            }
-        }
-
-        @Override public void schedule(Runnable childStatement)
-        {
-            executorService.submit(childStatement);
-        }
+      executorService = Executors.newFixedThreadPool(cores);
     }
 
-    public ParallelParameterized(Class c) throws Throwable
-    {
-        super(c);
-        long timeoutSeconds = Long.MAX_VALUE;
-        if (c.getSimpleName().equals("TestRendering"))
-        {
-            timeoutSeconds = 30;
-        }
-        setScheduler(new FixedThreadPoolScheduler(timeoutSeconds));
+    @Override
+    public void finished() {
+      executorService.shutdown();
+      try {
+        executorService.awaitTermination(timeoutSeconds, TimeUnit.SECONDS);
+      } catch (InterruptedException exc) {
+        throw new RuntimeException(exc);
+      }
     }
+
+    @Override
+    public void schedule(Runnable childStatement) {
+      executorService.submit(childStatement);
+    }
+  }
+
+  public ParallelParameterized(Class c) throws Throwable {
+    super(c);
+    long timeoutSeconds = Long.MAX_VALUE;
+    if (c.getSimpleName().equals("TestRendering")) {
+      timeoutSeconds = 30;
+    }
+    setScheduler(new FixedThreadPoolScheduler(timeoutSeconds));
+  }
 }

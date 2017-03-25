@@ -18,6 +18,7 @@ package org.apache.pdfbox.examples.pdfa;
 import junit.framework.TestCase;
 
 import java.io.File;
+
 import org.apache.pdfbox.examples.pdmodel.CreatePDFA;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
@@ -31,16 +32,13 @@ import org.apache.xmpbox.schema.DublinCoreSchema;
 import org.apache.xmpbox.xml.DomXmpParser;
 
 /**
- *
  * @author Tilman Hausherr
  */
-public class CreatePDFATest extends TestCase
-{
+public class CreatePDFATest extends TestCase {
     private final String outDir = "target/test-output";
 
     @Override
-    protected void setUp() throws Exception
-    {
+    protected void setUp() throws Exception {
         super.setUp();
         new File(outDir).mkdirs();
     }
@@ -48,27 +46,25 @@ public class CreatePDFATest extends TestCase
     /**
      * Test of doIt method of class CreatePDFA.
      */
-    public void testCreatePDFA() throws Exception
-    {
+    public void testCreatePDFA() throws Exception {
         System.out.println("testCreatePDFA");
         String pdfaFilename = outDir + "/PDFA.pdf";
         String message = "The quick brown fox jumps over the lazy dog äöüÄÖÜß @°^²³ {[]}";
         String dir = "../pdfbox/src/main/resources/org/apache/pdfbox/resources/ttf/";
         String fontfile = dir + "LiberationSans-Regular.ttf";
-        CreatePDFA.main(new String[] { pdfaFilename, message, fontfile });
-        
+        CreatePDFA.main(new String[]{pdfaFilename, message, fontfile});
+
         PreflightParser preflightParser = new PreflightParser(new File(pdfaFilename));
         preflightParser.parse();
         PreflightDocument preflightDocument = preflightParser.getPreflightDocument();
         preflightDocument.validate();
         ValidationResult result = preflightDocument.getResult();
-        for (ValidationError ve : result.getErrorsList())
-        {
+        for (ValidationError ve : result.getErrorsList()) {
             System.err.println(ve.getErrorCode() + ": " + ve.getDetails());
         }
         assertTrue("PDF file created with CreatePDFA is not valid PDF/A-1b", result.isValid());
         preflightDocument.close();
-        
+
         // check the XMP metadata
         PDDocument document = PDDocument.load(new File(pdfaFilename));
         PDDocumentCatalog catalog = document.getDocumentCatalog();
@@ -79,5 +75,5 @@ public class CreatePDFATest extends TestCase
         assertEquals(pdfaFilename, dc.getTitle());
         document.close();
     }
-    
+
 }

@@ -27,14 +27,11 @@ import org.apache.pdfbox.multipdf.Overlay.Position;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 /**
- * 
  * Adds an overlay to an existing PDF document.
- *  
- * Based on code contributed by Balazs Jerk. 
- * 
+ * <p>
+ * Based on code contributed by Balazs Jerk.
  */
-public final class OverlayPDF 
-{
+public final class OverlayPDF {
     private static final Log LOG = LogFactory.getLog(OverlayPDF.class);
 
     // Command line options
@@ -46,18 +43,16 @@ public final class OverlayPDF
     private static final String PAGE = "-page";
     private static final String USEALLPAGES = "-useAllPages";
 
-    private OverlayPDF()
-    {
-    }    
-    
+    private OverlayPDF() {
+    }
+
     /**
      * This will overlay a document and write out the results.
      *
      * @param args command line arguments
      * @throws IOException if something went wrong
      */
-    public static void main(final String[] args) throws IOException
-    {
+    public static void main(final String[] args) throws IOException {
         // suppress the Dock icon on OS X
         System.setProperty("apple.awt.UIElement", "true");
 
@@ -65,124 +60,88 @@ public final class OverlayPDF
         Overlay overlayer = new Overlay();
         Map<Integer, String> specificPageOverlayFile = new HashMap<Integer, String>();
         // input arguments
-        for (int i = 0; i < args.length; i++) 
-        {
+        for (int i = 0; i < args.length; i++) {
             String arg = args[i].trim();
-            if (i == 0) 
-            {
+            if (i == 0) {
                 overlayer.setInputFile(arg);
-            } 
-            else if (i == (args.length - 1)) 
-            {
+            } else if (i == (args.length - 1)) {
                 outputFilename = arg;
-            } 
-            else if (arg.equals(POSITION) && ((i + 1) < args.length)) 
-            {
-                if (Position.FOREGROUND.toString().equalsIgnoreCase(args[i + 1].trim())) 
-                {
+            } else if (arg.equals(POSITION) && ((i + 1) < args.length)) {
+                if (Position.FOREGROUND.toString().equalsIgnoreCase(args[i + 1].trim())) {
                     overlayer.setOverlayPosition(Position.FOREGROUND);
-                }
-                else if (Position.BACKGROUND.toString().equalsIgnoreCase(args[i + 1].trim())) 
-                {
+                } else if (Position.BACKGROUND.toString().equalsIgnoreCase(args[i + 1].trim())) {
                     overlayer.setOverlayPosition(Position.BACKGROUND);
-                }
-                else
-                {
+                } else {
                     usage();
                 }
                 i += 1;
-            } 
-            else if (arg.equals(ODD) && ((i + 1) < args.length)) 
-            {
+            } else if (arg.equals(ODD) && ((i + 1) < args.length)) {
                 overlayer.setOddPageOverlayFile(args[i + 1].trim());
                 i += 1;
-            } 
-            else if (arg.equals(EVEN) && ((i + 1) < args.length)) 
-            {
+            } else if (arg.equals(EVEN) && ((i + 1) < args.length)) {
                 overlayer.setEvenPageOverlayFile(args[i + 1].trim());
                 i += 1;
-            } 
-            else if (arg.equals(FIRST) && ((i + 1) < args.length)) 
-            {
+            } else if (arg.equals(FIRST) && ((i + 1) < args.length)) {
                 overlayer.setFirstPageOverlayFile(args[i + 1].trim());
                 i += 1;
-            } 
-            else if (arg.equals(LAST) && ((i + 1) < args.length)) 
-            {
+            } else if (arg.equals(LAST) && ((i + 1) < args.length)) {
                 overlayer.setLastPageOverlayFile(args[i + 1].trim());
                 i += 1;
-            } 
-            else if (arg.equals(USEALLPAGES) && ((i + 1) < args.length)) 
-            {
+            } else if (arg.equals(USEALLPAGES) && ((i + 1) < args.length)) {
                 overlayer.setAllPagesOverlayFile(args[i + 1].trim());
                 i += 1;
-            } 
-            else if (arg.equals(PAGE) && ((i + 2) < args.length) && (isInteger(args[i + 1].trim()))) 
-            {
+            } else if (arg.equals(PAGE) && ((i + 2) < args.length) && (isInteger(args[i + 1].trim()))) {
                 specificPageOverlayFile.put(Integer.parseInt(args[i + 1].trim()), args[i + 2].trim());
                 i += 2;
-            } 
-            else if (overlayer.getDefaultOverlayFile() == null) 
-            {
+            } else if (overlayer.getDefaultOverlayFile() == null) {
                 overlayer.setDefaultOverlayFile(arg);
-            } 
-            else 
-            {
+            } else {
                 usage();
             }
         }
-        
-        if (overlayer.getInputFile() == null || outputFilename == null) 
-        {
+
+        if (overlayer.getInputFile() == null || outputFilename == null) {
             usage();
         }
-        
-        try 
-        {
+
+        try {
             PDDocument result = overlayer.overlay(specificPageOverlayFile);
             result.save(outputFilename);
             result.close();
             // close the input files AFTER saving the resulting file as some 
             // streams are shared among the input and the output files
             overlayer.close();
-        } 
-        catch (IOException e) 
-        {
+        } catch (IOException e) {
             LOG.error("Overlay failed: " + e.getMessage(), e);
             throw e;
         }
     }
 
-    private static void usage()
-    {
+    private static void usage() {
         String message = "Usage: java -jar pdfbox-app-x.y.z.jar OverlayPDF <inputfile> [options] <outputfile>\n"
-                + "\nOptions:\n"
-                + "  <inputfile>                                  : input file\n"
-                + "  <defaultOverlay.pdf>                         : default overlay file\n"
-                + "  -odd <oddPageOverlay.pdf>                    : overlay file used for odd pages\n"
-                + "  -even <evenPageOverlay.pdf>                  : overlay file used for even pages\n"
-                + "  -first <firstPageOverlay.pdf>                : overlay file used for the first page\n"
-                + "  -last <lastPageOverlay.pdf>                  : overlay file used for the last page\n"
-                + "  -useAllPages <allPagesOverlay.pdf>           : overlay file used for overlay, all pages"
-                + " are used by simply repeating them\n"
-                + "  -page <pageNumber> <specificPageOverlay.pdf> : overlay file used for "
-                + "the given page number, may occur more than once\n"
-                + "  -position foreground|background              : where to put the overlay "
-                + "file: foreground or background\n"
-                + "  <outputfile>                                 : output file";
+            + "\nOptions:\n"
+            + "  <inputfile>                                  : input file\n"
+            + "  <defaultOverlay.pdf>                         : default overlay file\n"
+            + "  -odd <oddPageOverlay.pdf>                    : overlay file used for odd pages\n"
+            + "  -even <evenPageOverlay.pdf>                  : overlay file used for even pages\n"
+            + "  -first <firstPageOverlay.pdf>                : overlay file used for the first page\n"
+            + "  -last <lastPageOverlay.pdf>                  : overlay file used for the last page\n"
+            + "  -useAllPages <allPagesOverlay.pdf>           : overlay file used for overlay, all pages"
+            + " are used by simply repeating them\n"
+            + "  -page <pageNumber> <specificPageOverlay.pdf> : overlay file used for "
+            + "the given page number, may occur more than once\n"
+            + "  -position foreground|background              : where to put the overlay "
+            + "file: foreground or background\n"
+            + "  <outputfile>                                 : output file";
 
         System.err.println(message);
-        System.exit( 1 );
+        System.exit(1);
     }
 
-    private static boolean isInteger(String str) 
-    {
-        try 
-        {
+    private static boolean isInteger(String str) {
+        try {
             Integer.parseInt(str);
-        } 
-        catch (NumberFormatException nfe) 
-        {
+        } catch (NumberFormatException nfe) {
             return false;
         }
         return true;

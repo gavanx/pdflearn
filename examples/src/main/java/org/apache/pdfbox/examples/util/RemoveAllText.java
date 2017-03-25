@@ -17,7 +17,9 @@
 package org.apache.pdfbox.examples.util;
 
 import java.io.OutputStream;
+
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdfparser.PDFStreamParser;
 import org.apache.pdfbox.pdfwriter.ContentStreamWriter;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -38,13 +40,11 @@ import java.util.List;
  *
  * @author Ben Litchfield
  */
-public final class RemoveAllText
-{
+public final class RemoveAllText {
     /**
      * Default constructor.
      */
-    private RemoveAllText()
-    {
+    private RemoveAllText() {
         // example class should not be instantiated
     }
 
@@ -52,72 +52,55 @@ public final class RemoveAllText
      * This will remove all text from a PDF document.
      *
      * @param args The command line arguments.
-     *
      * @throws IOException If there is an error parsing the document.
      */
-    public static void main(String[] args) throws IOException
-    {
-        if (args.length != 2)
-        {
+    public static void main(String[] args) throws IOException {
+        args = new String[]{"/home/data/work/4.pdf", "/home/data/work/pdfxx_remove.pdf"};
+        if (args.length != 2) {
             usage();
-        }
-        else
-        {
+        } else {
             PDDocument document = null;
-            try
-            {
+            try {
                 document = PDDocument.load(new File(args[0]));
-                if (document.isEncrypted())
-                {
+                if (document.isEncrypted()) {
                     System.err.println(
                             "Error: Encrypted documents are not supported for this example.");
                     System.exit(1);
                 }
-                for (PDPage page : document.getPages())
-                {
+                for (PDPage page : document.getPages()) {
                     removeAllTextTokens(page, document);
                 }
                 document.save(args[1]);
-            }
-            finally
-            {
-                if (document != null)
-                {
+            } finally {
+                if (document != null) {
                     document.close();
                 }
             }
         }
     }
 
-    private static void processResources(PDResources resources) throws IOException
-    {
+    private static void processResources(PDResources resources) throws IOException {
         Iterable<COSName> names = resources.getXObjectNames();
-        for (COSName name : names)
-        {
+        for (COSName name : names) {
             PDXObject xobject = resources.getXObject(name);
-            if (xobject instanceof PDFormXObject)
-            {
+            if (xobject instanceof PDFormXObject) {
                 removeAllTextTokens((PDFormXObject) xobject);
             }
         }
     }
 
-    private static void removeAllTextTokens(PDPage page, PDDocument document) throws IOException
-    {
+    private static void removeAllTextTokens(PDPage page, PDDocument document) throws IOException {
         PDFStreamParser parser = new PDFStreamParser(page);
         parser.parse();
         List<Object> tokens = parser.getTokens();
         List<Object> newTokens = new ArrayList<Object>();
-        for (Object token : tokens)
-        {
-            if (token instanceof Operator)
-            {
+        for (Object token : tokens) {
+            if (token instanceof Operator) {
                 String opname = ((Operator) token).getName();
-                if ("TJ".equals(opname) || "Tj".equals(opname))
-                {
+                if ("TJ".equals(opname) || "Tj".equals(opname)) {
                     // remove the one argument to this operator
-                    newTokens.remove(newTokens.size() - 1);
-                    continue;
+//                    newTokens.remove(newTokens.size() - 1);
+//                    continue;
                 }
             }
             newTokens.add(token);
@@ -131,24 +114,28 @@ public final class RemoveAllText
         processResources(page.getResources());
     }
 
-    private static void removeAllTextTokens(PDFormXObject xobject) throws IOException
-    {
+    private static void removeAllTextTokens(PDFormXObject xobject) throws IOException {
         PDStream stream = xobject.getContentStream();
         PDFStreamParser parser = new PDFStreamParser(xobject);
         parser.parse();
         List<Object> tokens = parser.getTokens();
         List<Object> newTokens = new ArrayList<Object>();
-        for (Object token : tokens)
-        {
-            if (token instanceof Operator)
-            {
+        for (Object token : tokens) {
+            if (token instanceof Operator) {
                 Operator op = (Operator) token;
                 if ("TJ".equals(op.getName()) || "Tj".equals(op.getName()) ||
-                     "'".equals(op.getName()) || "\"".equals(op.getName()))
-                {
+                        "'".equals(op.getName()) || "\"".equals(op.getName())) {
                     // remove the one argument to this operator
-                    newTokens.remove(newTokens.size() - 1);
-                    continue;
+                    Object pre = newTokens.get(newTokens.size() - 1);
+                    if(pre instanceof COSString){
+                        COSString str = (COSString)pre;
+                        if(str.getString().equals("www.pdftron.com")){
+                            newTokens.remove(newTokens.size() - 1);
+                            continue;
+                        }
+                    }
+//                    newTokens.remove(newTokens.size() - 1);
+//                    continue;
                 }
             }
             newTokens.add(token);
@@ -163,8 +150,7 @@ public final class RemoveAllText
     /**
      * This will print the usage for this document.
      */
-    private static void usage()
-    {
+    private static void usage() {
         System.err.println(
                 "Usage: java " + RemoveAllText.class.getName() + " <input-pdf> <output-pdf>");
     }

@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+
 import org.apache.pdfbox.contentstream.operator.color.SetNonStrokingColor;
 import org.apache.pdfbox.contentstream.operator.color.SetNonStrokingColorN;
 import org.apache.pdfbox.contentstream.operator.color.SetNonStrokingColorSpace;
@@ -49,15 +50,13 @@ import org.apache.pdfbox.text.TextPosition;
  * @author Ben Litchfield
  * @author Tilman Hausherr
  */
-public class PrintTextColors extends PDFTextStripper
-{
+public class PrintTextColors extends PDFTextStripper {
     /**
      * Instantiate a new PDFTextStripper object.
      *
      * @throws IOException If there is an error loading the properties.
      */
-    public PrintTextColors() throws IOException
-    {
+    public PrintTextColors() throws IOException {
         addOperator(new SetStrokingColorSpace());
         addOperator(new SetNonStrokingColorSpace());
         addOperator(new SetStrokingDeviceCMYKColor());
@@ -76,20 +75,15 @@ public class PrintTextColors extends PDFTextStripper
      * This will print the documents data.
      *
      * @param args The command line arguments.
-     *
      * @throws IOException If there is an error parsing the document.
      */
-    public static void main(String[] args) throws IOException
-    {
-        if (args.length != 1)
-        {
+    public static void main(String[] args) throws IOException {
+        args = new String[]{"/home/data/work/pdfxx.pdf"};
+        if (args.length != 1) {
             usage();
-        }
-        else
-        {
+        } else {
             PDDocument document = null;
-            try
-            {
+            try {
                 document = PDDocument.load(new File(args[0]));
 
                 PDFTextStripper stripper = new PrintTextColors();
@@ -99,11 +93,8 @@ public class PrintTextColors extends PDFTextStripper
 
                 Writer dummy = new OutputStreamWriter(new ByteArrayOutputStream());
                 stripper.writeText(document, dummy);
-            }
-            finally
-            {
-                if (document != null)
-                {
+            } finally {
+                if (document != null) {
                     document.close();
                 }
             }
@@ -111,8 +102,7 @@ public class PrintTextColors extends PDFTextStripper
     }
 
     @Override
-    protected void processTextPosition(TextPosition text)
-    {
+    protected void processTextPosition(TextPosition text) {
         super.processTextPosition(text);
 
         PDColor strokingColor = getGraphicsState().getStrokingColor();
@@ -132,8 +122,7 @@ public class PrintTextColors extends PDFTextStripper
     /**
      * This will print the usage for this document.
      */
-    private static void usage()
-    {
+    private static void usage() {
         System.err.println("Usage: java " + PrintTextColors.class.getName() + " <input-pdf>");
     }
 }

@@ -31,44 +31,35 @@ import java.util.List;
  * @author Ben Litchfield
  * @author Mario Ivankovits
  */
-public class DrawObject extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        if (arguments.size() < 1)
-        {
-            throw new MissingOperandException(operator, arguments);
-        }
-        COSBase base0 = arguments.get(0);
-        if (!(base0 instanceof COSName))
-        {
-            return;
-        }
-        COSName name = (COSName) base0;
+public class DrawObject extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    if (arguments.size() < 1) {
+      throw new MissingOperandException(operator, arguments);
+    }
+    COSBase base0 = arguments.get(0);
+    if (!(base0 instanceof COSName)) {
+      return;
+    }
+    COSName name = (COSName) base0;
 
-        if (context.getResources().isImageXObject(name))
-        {
-            // we're done here, don't decode images when doing text extraction
-            return;
-        }
-        
-        PDXObject xobject = context.getResources().getXObject(name);
-
-        if (xobject instanceof PDTransparencyGroup)
-        {
-            context.showTransparencyGroup((PDTransparencyGroup) xobject);
-        }
-        else if (xobject instanceof PDFormXObject)
-        {
-            PDFormXObject form = (PDFormXObject) xobject;
-            context.showForm(form);
-        }
+    if (context.getResources().isImageXObject(name)) {
+      // we're done here, don't decode images when doing text extraction
+      return;
     }
 
-    @Override
-    public String getName()
-    {
-        return "Do";
+    PDXObject xobject = context.getResources().getXObject(name);
+
+    if (xobject instanceof PDTransparencyGroup) {
+      context.showTransparencyGroup((PDTransparencyGroup) xobject);
+    } else if (xobject instanceof PDFormXObject) {
+      PDFormXObject form = (PDFormXObject) xobject;
+      context.showForm(form);
     }
+  }
+
+  @Override
+  public String getName() {
+    return "Do";
+  }
 }

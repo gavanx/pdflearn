@@ -39,66 +39,63 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 /**
  * An example for singing a PDF with bouncy castle.
  * A keystore can be created with the java keytool, for example:
- *
+ * <p>
  * {@code keytool -genkeypair -storepass 123456 -storetype pkcs12 -alias test -validity 365
- *        -v -keyalg RSA -keystore keystore.p12 }
+ * -v -keyalg RSA -keystore keystore.p12 }
  *
  * @author Thomas Chojecki
  * @author Vakhtang Koroghlishvili
  * @author John Hewson
  */
-public class CreateSignature extends CreateSignatureBase
-{
+public class CreateSignature extends CreateSignatureBase {
 
     /**
      * Initialize the signature creator with a keystore and certficate password.
      *
      * @param keystore the pkcs12 keystore containing the signing certificate
-     * @param pin the password for recovering the key
-     * @throws KeyStoreException if the keystore has not been initialized (loaded)
-     * @throws NoSuchAlgorithmException if the algorithm for recovering the key cannot be found
+     * @param pin      the password for recovering the key
+     * @throws KeyStoreException         if the keystore has not been initialized (loaded)
+     * @throws NoSuchAlgorithmException  if the algorithm for recovering the key cannot be found
      * @throws UnrecoverableKeyException if the given password is wrong
-     * @throws CertificateException if the certificate is not valid as signing time
-     * @throws IOException if no certificate could be found
+     * @throws CertificateException      if the certificate is not valid as signing time
+     * @throws IOException               if no certificate could be found
      */
     public CreateSignature(KeyStore keystore, char[] pin)
-            throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException, CertificateException, IOException
-    {
+            throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException, CertificateException, IOException {
         super(keystore, pin);
     }
 
     /**
      * Signs the given PDF file. Alters the original file on disk.
+     *
      * @param file the PDF file to sign
      * @throws IOException if the file could not be read or written
      */
-    public void signDetached(File file) throws IOException
-    {
+    public void signDetached(File file) throws IOException {
         signDetached(file, file, null);
     }
 
     /**
      * Signs the given PDF file.
-     * @param inFile input PDF file
+     *
+     * @param inFile  input PDF file
      * @param outFile output PDF file
      * @throws IOException if the input file could not be read
      */
-    public void signDetached(File inFile, File outFile) throws IOException
-    {
+    public void signDetached(File inFile, File outFile) throws IOException {
         signDetached(inFile, outFile, null);
     }
 
     /**
      * Signs the given PDF file.
-     * @param inFile input PDF file
-     * @param outFile output PDF file
+     *
+     * @param inFile    input PDF file
+     * @param outFile   output PDF file
      * @param tsaClient optional TSA client
      * @throws IOException if the input file could not be read
      */
-    public void signDetached(File inFile, File outFile, TSAClient tsaClient) throws IOException
-    {
-        if (inFile == null || !inFile.exists())
-        {
+    public void signDetached(File inFile, File outFile, TSAClient tsaClient) throws IOException {
+        if (inFile == null || !inFile.exists()) {
             throw new FileNotFoundException("Document for signing does not exist");
         }
 
@@ -111,15 +108,13 @@ public class CreateSignature extends CreateSignatureBase
     }
 
     public void signDetached(PDDocument document, OutputStream output, TSAClient tsaClient)
-            throws IOException
-    {
+            throws IOException {
         setTsaClient(tsaClient);
 
         int accessPermissions = getMDPPermission(document);
-        if (accessPermissions == 1)
-        {
+        if (accessPermissions == 1) {
             throw new IllegalStateException("No changes to the document are permitted due to DocMDP transform parameters dictionary");
-        }     
+        }
 
         // create signature dictionary
         PDSignature signature = new PDSignature();
@@ -134,13 +129,11 @@ public class CreateSignature extends CreateSignatureBase
         signature.setSignDate(Calendar.getInstance());
 
         // Optional: certify 
-        if (accessPermissions == 0)
-        {
+        if (accessPermissions == 0) {
             setMDPPermission(document, signature, 2);
-        }        
+        }
 
-        if (isExternalSigning())
-        {
+        if (isExternalSigning()) {
             System.out.println("Sign externally...");
             document.addSignature(signature);
             ExternalSigningSupport externalSigning =
@@ -149,9 +142,7 @@ public class CreateSignature extends CreateSignatureBase
             byte[] cmsSignature = sign(externalSigning.getContent());
             // set signature bytes received from the service
             externalSigning.setSignature(cmsSignature);
-        }
-        else
-        {
+        } else {
             // register signature dictionary and sign interface
             document.addSignature(signature, this);
 
@@ -160,30 +151,24 @@ public class CreateSignature extends CreateSignatureBase
         }
     }
 
-    public static void main(String[] args) throws IOException, GeneralSecurityException
-    {
-        if (args.length < 3)
-        {
+    public static void main(String[] args) throws IOException, GeneralSecurityException {
+        if (args.length < 3) {
             usage();
             System.exit(1);
         }
 
         String tsaUrl = null;
         boolean externalSig = false;
-        for (int i = 0; i < args.length; i++)
-        {
-            if (args[i].equals("-tsa"))
-            {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals("-tsa")) {
                 i++;
-                if (i >= args.length)
-                {
+                if (i >= args.length) {
                     usage();
                     System.exit(1);
                 }
                 tsaUrl = args[i];
             }
-            if (args[i].equals("-e"))
-            {
+            if (args[i].equals("-e")) {
                 externalSig = true;
             }
         }
@@ -196,8 +181,7 @@ public class CreateSignature extends CreateSignatureBase
 
         // TSA client
         TSAClient tsaClient = null;
-        if (tsaUrl != null)
-        {
+        if (tsaUrl != null) {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             tsaClient = new TSAClient(new URL(tsaUrl), null, null, digest);
         }
@@ -214,12 +198,11 @@ public class CreateSignature extends CreateSignatureBase
         signing.signDetached(inFile, outFile, tsaClient);
     }
 
-    private static void usage()
-    {
+    private static void usage() {
         System.err.println("usage: java " + CreateSignature.class.getName() + " " +
-                           "<pkcs12_keystore> <password> <pdf_to_sign>\n" + "" +
-                           "options:\n" +
-                           "  -tsa <url>    sign timestamp using the given TSA server\n" +
-                           "  -e            sign using external signature creation scenario");
+                "<pkcs12_keystore> <password> <pdf_to_sign>\n" + "" +
+                "options:\n" +
+                "  -tsa <url>    sign timestamp using the given TSA server\n" +
+                "  -e            sign using external signature creation scenario");
     }
 }

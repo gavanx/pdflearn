@@ -28,34 +28,28 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 /**
  * Creates a "Hello World" PDF using the built-in Helvetica font.
- *
+ * <p>
  * The example is taken from the PDF file format specification.
  */
-public final class HelloWorld
-{
-    private HelloWorld()
-    {
+public final class HelloWorld {
+    private HelloWorld() {
     }
-    
-    public static void main(String[] args) throws IOException
-    {
-        if( args.length != 2 )
-        {
+
+    public static void main(String[] args) throws IOException {
+        args = new String[]{"/home/data/work/pdfxx.pdf", "gavan"};
+        if (args.length != 2) {
             System.err.println("usage: " + HelloWorld.class.getName() + " <output-file> <Message>");
             System.exit(1);
         }
 
         String filename = args[0];
         String message = args[1];
-        
+
         PDDocument doc = new PDDocument();
-        try
-        {
+        try {
             PDPage page = new PDPage();
             doc.addPage(page);
-            
-            PDFont font = PDType1Font.HELVETICA_BOLD;
-
+            PDFont font = PDType1Font.COURIER;
             PDPageContentStream contents = new PDPageContentStream(doc, page);
             contents.beginText();
             contents.setFont(font, 12);
@@ -63,11 +57,8 @@ public final class HelloWorld
             contents.showText(message);
             contents.endText();
             contents.close();
-            
             doc.save(filename);
-        }
-        finally
-        {
+        } finally {
             doc.close();
         }
     }

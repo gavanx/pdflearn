@@ -21,29 +21,27 @@ import java.awt.Dimension;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
+
 import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.debugger.hexviewer.HexView;
 
 /**
  * @author Khyrul Bashar
  */
-public class StringPane
-{
+public class StringPane {
     private static final String TEXT_TAB = "Text View";
     private static final String HEX_TAB = "Hex view";
 
     private final JTabbedPane tabbedPane;
 
-    public StringPane(COSString cosString)
-    {
+    public StringPane(COSString cosString) {
         tabbedPane = new JTabbedPane();
         tabbedPane.setPreferredSize(new Dimension(300, 500));
         tabbedPane.addTab(TEXT_TAB, createTextView(cosString));
         tabbedPane.addTab(HEX_TAB, createHexView(cosString));
     }
 
-    private JTextPane createTextView(COSString cosString)
-    {
+    private JTextPane createTextView(COSString cosString) {
         JTextPane textPane = new JTextPane();
         textPane.setText(getTextString(cosString));
         textPane.setEditable(false);
@@ -51,28 +49,23 @@ public class StringPane
         return textPane;
     }
 
-    private JComponent createHexView(COSString cosString)
-    {
+    private JComponent createHexView(COSString cosString) {
         HexView hexView = new HexView(cosString.getBytes());
         return hexView.getPane();
     }
 
-    private String getTextString(COSString cosString)
-    {
+    private String getTextString(COSString cosString) {
         String text = cosString.getString();
-        for (char c : text.toCharArray())
-        {
-            if (Character.isISOControl(c))
-            {
+        for (char c : text.toCharArray()) {
+            if (Character.isISOControl(c)) {
                 text = "<" + cosString.toHexString() + ">";
                 break;
             }
         }
-        return  "" + text;
+        return "" + text;
     }
 
-    public JTabbedPane getPane()
-    {
+    public JTabbedPane getPane() {
         return tabbedPane;
     }
 }

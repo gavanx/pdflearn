@@ -27,10 +27,8 @@ import java.io.IOException;
  *
  * @author Ben Litchfield
  */
-public final class AddJavascript
-{
-    private AddJavascript()
-    {
+public final class AddJavascript {
+    private AddJavascript() {
         //static class, should not be instantiated.
     }
 
@@ -38,34 +36,24 @@ public final class AddJavascript
      * This will print the documents data.
      *
      * @param args The command line arguments.
-     *
      * @throws IOException If there is an error parsing the document.
      */
-    public static void main( String[] args ) throws IOException
-    {
-        if( args.length != 2 )
-        {
+    public static void main(String[] args) throws IOException {
+        if (args.length != 2) {
             usage();
-        }
-        else
-        {
+        } else {
             PDDocument document = null;
-            try
-            {
-                document = PDDocument.load( new File(args[0]) );
+            try {
+                document = PDDocument.load(new File(args[0]));
                 PDActionJavaScript javascript = new PDActionJavaScript(
                     "app.alert( {cMsg: 'PDFBox rocks!', nIcon: 3, nType: 0, cTitle: 'PDFBox Javascript example' } );");
-                document.getDocumentCatalog().setOpenAction( javascript );
-                if( document.isEncrypted() )
-                {
-                    throw new IOException( "Encrypted documents are not supported for this example" );
+                document.getDocumentCatalog().setOpenAction(javascript);
+                if (document.isEncrypted()) {
+                    throw new IOException("Encrypted documents are not supported for this example");
                 }
-                document.save( args[1] );
-            }
-            finally
-            {
-                if( document != null )
-                {
+                document.save(args[1]);
+            } finally {
+                if (document != null) {
                     document.close();
                 }
             }
@@ -75,8 +63,7 @@ public final class AddJavascript
     /**
      * This will print the usage for this document.
      */
-    private static void usage()
-    {
-        System.err.println( "Usage: java " + AddJavascript.class.getName() + " <input-pdf> <output-pdf>" );
+    private static void usage() {
+        System.err.println("Usage: java " + AddJavascript.class.getName() + " <input-pdf> <output-pdf>");
     }
 }

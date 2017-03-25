@@ -35,13 +35,11 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
  *
  * @author Ben Litchfield
  */
-public final class ReplaceURLs
-{
+public final class ReplaceURLs {
     /**
      * Constructor.
      */
-    private ReplaceURLs()
-    {
+    private ReplaceURLs() {
         //utility class
     }
 
@@ -52,52 +50,39 @@ public final class ReplaceURLs
      * see usage() for commandline
      *
      * @param args Command line arguments.
-     *
      * @throws IOException If there is an error during the process.
      */
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         PDDocument doc = null;
-        try
-        {
-            if( args.length != 2 )
-            {
+        try {
+            args = new String[]{"/home/data/work/pdfxx_m.pdf", "/home/data/work/pdfxx_replace.pdf"};
+            if (args.length != 2) {
                 usage();
-            }
-            else
-            {
-                doc = PDDocument.load( new File(args[0]) );
+            } else {
+                doc = PDDocument.load(new File(args[0]));
                 int pageNum = 0;
-                for( PDPage page : doc.getPages() )
-                {
+                for (PDPage page : doc.getPages()) {
                     pageNum++;
                     List<PDAnnotation> annotations = page.getAnnotations();
-
-                    for (PDAnnotation annotation : annotations)
-                    {
+                    for (PDAnnotation annotation : annotations) {
                         PDAnnotation annot = annotation;
-                        if( annot instanceof PDAnnotationLink )
-                        {
-                            PDAnnotationLink link = (PDAnnotationLink)annot;
+                        if (annot instanceof PDAnnotationLink) {
+                            PDAnnotationLink link = (PDAnnotationLink) annot;
                             PDAction action = link.getAction();
-                            if( action instanceof PDActionURI )
-                            {
-                                PDActionURI uri = (PDActionURI)action;
+                            if (action instanceof PDActionURI) {
+                                PDActionURI uri = (PDActionURI) action;
                                 String oldURI = uri.getURI();
                                 String newURI = "http://pdfbox.apache.org";
-                                System.out.println( "Page " + pageNum +": Replacing " + oldURI + " with " + newURI );
-                                uri.setURI( newURI );
+                                System.out.println("Page " + pageNum + ": Replacing " + oldURI + " with " + newURI);
+                                uri.setURI(newURI);
                             }
                         }
                     }
                 }
-                doc.save( args[1] );
+                doc.save(args[1]);
             }
-        }
-        finally
-        {
-            if( doc != null )
-            {
+        } finally {
+            if (doc != null) {
                 doc.close();
             }
         }
@@ -106,8 +91,7 @@ public final class ReplaceURLs
     /**
      * This will print out a message telling how to use this example.
      */
-    private static void usage()
-    {
-        System.err.println( "usage: " + ReplaceURLs.class.getName() + " <input-file> <output-file>" );
+    private static void usage() {
+        System.err.println("usage: " + ReplaceURLs.class.getName() + " <input-file> <output-file>");
     }
 }

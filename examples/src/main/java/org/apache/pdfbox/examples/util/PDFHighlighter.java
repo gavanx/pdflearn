@@ -34,12 +34,10 @@ import org.apache.pdfbox.text.PDFTextStripper;
  *
  * @author slagraulet (slagraulet@cardiweb.com)
  * @author Ben Litchfield
- *
  * @see <a href="http://partners.adobe.com/public/developer/en/pdf/HighlightFileFormat.pdf">
- *      Adobe Highlight File Format</a>
+ * Adobe Highlight File Format</a>
  */
-public class PDFHighlighter extends PDFTextStripper
-{
+public class PDFHighlighter extends PDFTextStripper {
     private Writer highlighterOutput = null;
 
     private String[] searchedWords;
@@ -52,46 +50,41 @@ public class PDFHighlighter extends PDFTextStripper
      *
      * @throws IOException If there is an error constructing this class.
      */
-    public PDFHighlighter() throws IOException
-    {
+    public PDFHighlighter() throws IOException {
         super();
-        super.setLineSeparator( "" );
-        super.setWordSeparator( "" );
-        super.setShouldSeparateByBeads( false );
-        super.setSuppressDuplicateOverlappingText( false );
+        super.setLineSeparator("");
+        super.setWordSeparator("");
+        super.setShouldSeparateByBeads(false);
+        super.setSuppressDuplicateOverlappingText(false);
     }
 
     /**
      * Generate an XML highlight string based on the PDF.
      *
-     * @param pdDocument The PDF to find words in.
+     * @param pdDocument    The PDF to find words in.
      * @param highlightWord The word to search for.
-     * @param xmlOutput The resulting output xml file.
-     *
+     * @param xmlOutput     The resulting output xml file.
      * @throws IOException If there is an error reading from the PDF, or writing to the XML.
      */
-    public void generateXMLHighlight(PDDocument pdDocument, String highlightWord, Writer xmlOutput ) throws IOException
-    {
-        generateXMLHighlight( pdDocument, new String[] { highlightWord }, xmlOutput );
+    public void generateXMLHighlight(PDDocument pdDocument, String highlightWord, Writer xmlOutput) throws IOException {
+        generateXMLHighlight(pdDocument, new String[]{highlightWord}, xmlOutput);
     }
 
     /**
      * Generate an XML highlight string based on the PDF.
      *
      * @param pdDocument The PDF to find words in.
-     * @param sWords The words to search for.
-     * @param xmlOutput The resulting output xml file.
-     *
+     * @param sWords     The words to search for.
+     * @param xmlOutput  The resulting output xml file.
      * @throws IOException If there is an error reading from the PDF, or writing to the XML.
      */
-    public void generateXMLHighlight(PDDocument pdDocument, String[] sWords, Writer xmlOutput ) throws IOException
-    {
+    public void generateXMLHighlight(PDDocument pdDocument, String[] sWords, Writer xmlOutput) throws IOException {
         highlighterOutput = xmlOutput;
         searchedWords = sWords;
         highlighterOutput.write("<XML>\n<Body units=characters " +
-                                " version=2>\n<Highlight>\n");
+                " version=2>\n<Highlight>\n");
         textOS = new ByteArrayOutputStream();
-        textWriter = new OutputStreamWriter( textOS, ENCODING);
+        textWriter = new OutputStreamWriter(textOS, ENCODING);
         writeText(pdDocument, textWriter);
         highlighterOutput.write("</Highlight>\n</Body>\n</XML>");
         highlighterOutput.flush();
@@ -101,30 +94,26 @@ public class PDFHighlighter extends PDFTextStripper
      * {@inheritDoc}
      */
     @Override
-    protected void endPage( PDPage pdPage ) throws IOException
-    {
+    protected void endPage(PDPage pdPage) throws IOException {
         textWriter.flush();
 
-        String page = new String( textOS.toByteArray(), ENCODING );
+        String page = new String(textOS.toByteArray(), ENCODING);
         textOS.reset();
 
         // Traitement des listes à puces (caractères spéciaux)
-        if (page.indexOf('a') != -1)
-        {
+        if (page.indexOf('a') != -1) {
             page = page.replaceAll("a[0-9]{1,3}", ".");
         }
-        for (String searchedWord : searchedWords)
-        {
+        for (String searchedWord : searchedWords) {
             Pattern pattern = Pattern.compile(searchedWord, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(page);
-            while( matcher.find() )
-            {
+            while (matcher.find()) {
                 int begin = matcher.start();
                 int end = matcher.end();
                 highlighterOutput.write("    <loc " +
-                        "pg=" + (getCurrentPageNo()-1)
+                        "pg=" + (getCurrentPageNo() - 1)
                         + " pos=" + begin
-                        + " len="+ (end - begin)
+                        + " len=" + (end - begin)
                         + ">\n");
             }
         }
@@ -134,40 +123,32 @@ public class PDFHighlighter extends PDFTextStripper
      * Command line application.
      *
      * @param args The command line arguments to the application.
-     *
      * @throws IOException If there is an error generating the highlight file.
      */
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         PDFHighlighter xmlExtractor = new PDFHighlighter();
         PDDocument doc = null;
-        try
-        {
-            if( args.length < 2 )
-            {
+        try {
+            if (args.length < 2) {
                 usage();
             }
-            String[] highlightStrings = new String[ args.length - 1];
-            System.arraycopy( args, 1, highlightStrings, 0, highlightStrings.length );
-            doc = PDDocument.load( new File(args[0]) );
+            String[] highlightStrings = new String[args.length - 1];
+            System.arraycopy(args, 1, highlightStrings, 0, highlightStrings.length);
+            doc = PDDocument.load(new File(args[0]));
 
             xmlExtractor.generateXMLHighlight(
-                doc,
-                highlightStrings,
-                new OutputStreamWriter( System.out ) );
-        }
-        finally
-        {
-            if( doc != null )
-            {
+                    doc,
+                    highlightStrings,
+                    new OutputStreamWriter(System.out));
+        } finally {
+            if (doc != null) {
                 doc.close();
             }
         }
     }
 
-    private static void usage()
-    {
-        System.err.println( "usage: java " + PDFHighlighter.class.getName() + " <pdf file> word1 word2 word3 ..." );
-        System.exit( 1 );
+    private static void usage() {
+        System.err.println("usage: java " + PDFHighlighter.class.getName() + " <pdf file> word1 word2 word3 ...");
+        System.exit(1);
     }
 }

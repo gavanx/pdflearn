@@ -31,10 +31,8 @@ import java.util.List;
  *
  * @author Paul King
  */
-public final class RubberStamp
-{
-    private RubberStamp()
-    {
+public final class RubberStamp {
+    private RubberStamp() {
         //utility class, should not be instantiated.
     }
 
@@ -42,27 +40,19 @@ public final class RubberStamp
      * This will print the documents data.
      *
      * @param args The command line arguments.
-     *
      * @throws IOException If there is an error parsing the document.
      */
-    public static void main( String[] args ) throws IOException
-    {
-        if( args.length != 2 )
-        {
+    public static void main(String[] args) throws IOException {
+        if (args.length != 2) {
             usage();
-        }
-        else
-        {
+        } else {
             PDDocument document = null;
-            try
-            {
-                document = PDDocument.load( new File(args[0]) );
-                if( document.isEncrypted() )
-                {
-                    throw new IOException( "Encrypted documents are not supported for this example" );
+            try {
+                document = PDDocument.load(new File(args[0]));
+                if (document.isEncrypted()) {
+                    throw new IOException("Encrypted documents are not supported for this example");
                 }
-                for (PDPage page : document.getPages())
-                {
+                for (PDPage page : document.getPages()) {
                     List<PDAnnotation> annotations = page.getAnnotations();
 
                     PDAnnotationRubberStamp rs = new PDAnnotationRubberStamp();
@@ -73,12 +63,9 @@ public final class RubberStamp
                     annotations.add(rs);
                 }
 
-                document.save( args[1] );
-            }
-            finally
-            {
-                if( document != null )
-                {
+                document.save(args[1]);
+            } finally {
+                if (document != null) {
                     document.close();
                 }
             }
@@ -88,8 +75,7 @@ public final class RubberStamp
     /**
      * This will print the usage for this document.
      */
-    private static void usage()
-    {
-        System.err.println( "Usage: java " + RubberStamp.class.getName() + " <input-pdf> <output-pdf>" );
+    private static void usage() {
+        System.err.println("Usage: java " + RubberStamp.class.getName() + " <input-pdf> <output-pdf>");
     }
 }

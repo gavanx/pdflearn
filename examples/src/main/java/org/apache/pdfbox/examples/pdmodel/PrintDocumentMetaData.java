@@ -30,36 +30,25 @@ import java.util.Calendar;
  * This is an example on how to get a documents metadata information.
  *
  * @author Ben Litchfield
- * 
  */
-public class PrintDocumentMetaData
-{
+public class PrintDocumentMetaData {
     /**
      * This will print the documents data.
      *
      * @param args The command line arguments.
-     *
      * @throws IOException If there is an error parsing the document.
      */
-    public static void main( String[] args ) throws IOException
-    {
-        if( args.length != 1 )
-        {
+    public static void main(String[] args) throws IOException {
+        if (args.length != 1) {
             usage();
-        }
-        else
-        {
+        } else {
             PDDocument document = null;
-            try
-            {
-                document = PDDocument.load( new File(args[0]));
+            try {
+                document = PDDocument.load(new File(args[0]));
                 PrintDocumentMetaData meta = new PrintDocumentMetaData();
-                meta.printMetadata( document );
-            }
-            finally
-            {
-                if( document != null )
-                {
+                meta.printMetadata(document);
+            } finally {
+                if (document != null) {
                     document.close();
                 }
             }
@@ -69,37 +58,33 @@ public class PrintDocumentMetaData
     /**
      * This will print the usage for this document.
      */
-    private static void usage()
-    {
-        System.err.println( "Usage: java " + PrintDocumentMetaData.class.getName() + " <input-pdf>" );
+    private static void usage() {
+        System.err.println("Usage: java " + PrintDocumentMetaData.class.getName() + " <input-pdf>");
     }
 
     /**
      * This will print the documents data to System.out.
      *
      * @param document The document to get the metadata from.
-     *
      * @throws IOException If there is an error getting the page count.
      */
-    public void printMetadata( PDDocument document ) throws IOException
-    {
+    public void printMetadata(PDDocument document) throws IOException {
         PDDocumentInformation info = document.getDocumentInformation();
         PDDocumentCatalog cat = document.getDocumentCatalog();
         PDMetadata metadata = cat.getMetadata();
-        System.out.println( "Page Count=" + document.getNumberOfPages() );
-        System.out.println( "Title=" + info.getTitle() );
-        System.out.println( "Author=" + info.getAuthor() );
-        System.out.println( "Subject=" + info.getSubject() );
-        System.out.println( "Keywords=" + info.getKeywords() );
-        System.out.println( "Creator=" + info.getCreator() );
-        System.out.println( "Producer=" + info.getProducer() );
-        System.out.println( "Creation Date=" + formatDate( info.getCreationDate() ) );
-        System.out.println( "Modification Date=" + formatDate( info.getModificationDate() ) );
-        System.out.println( "Trapped=" + info.getTrapped() );
-        if( metadata != null )
-        {
-            String string =  new String( metadata.toByteArray(), "ISO-8859-1" );
-            System.out.println( "Metadata=" + string );
+        System.out.println("Page Count=" + document.getNumberOfPages());
+        System.out.println("Title=" + info.getTitle());
+        System.out.println("Author=" + info.getAuthor());
+        System.out.println("Subject=" + info.getSubject());
+        System.out.println("Keywords=" + info.getKeywords());
+        System.out.println("Creator=" + info.getCreator());
+        System.out.println("Producer=" + info.getProducer());
+        System.out.println("Creation Date=" + formatDate(info.getCreationDate()));
+        System.out.println("Modification Date=" + formatDate(info.getModificationDate()));
+        System.out.println("Trapped=" + info.getTrapped());
+        if (metadata != null) {
+            String string = new String(metadata.toByteArray(), "ISO-8859-1");
+            System.out.println("Metadata=" + string);
         }
     }
 
@@ -107,16 +92,13 @@ public class PrintDocumentMetaData
      * This will format a date object.
      *
      * @param date The date to format.
-     *
      * @return A string representation of the date.
      */
-    private String formatDate( Calendar date )
-    {
+    private String formatDate(Calendar date) {
         String retval = null;
-        if( date != null )
-        {
+        if (date != null) {
             SimpleDateFormat formatter = new SimpleDateFormat();
-            retval = formatter.format( date.getTime() );
+            retval = formatter.format(date.getTime());
         }
 
         return retval;

@@ -27,6 +27,7 @@ import java.io.IOException;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PageRanges;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 import org.apache.pdfbox.printing.PDFPrintable;
@@ -34,28 +35,24 @@ import org.apache.pdfbox.printing.PDFPrintable;
 /**
  * Examples of various different ways to print PDFs using PDFBox.
  */
-public final class Printing
-{
-    private Printing()
-    {
-    }   
+public final class Printing {
+    private Printing() {
+    }
 
     /**
      * Entry point.
      */
-    public static void main(String args[]) throws PrinterException, IOException
-    {
-        if (args.length != 1)
-        {
+    public static void main(String args[]) throws PrinterException, IOException {
+        if (args.length != 1) {
             System.err.println("usage: java " + Printing.class.getName() + " <input>");
             System.exit(1);
         }
 
         String filename = args[0];
         PDDocument document = PDDocument.load(new File(filename));
-        
+
         // choose your printing method:
-        print(document); 
+        print(document);
         //printWithAttributes(document);
         //printWithDialog(document);
         //printWithDialogAndAttributes(document);
@@ -66,8 +63,7 @@ public final class Printing
     /**
      * Prints the document at its actual size. This is the recommended way to print.
      */
-    private static void print(PDDocument document) throws IOException, PrinterException
-    {
+    private static void print(PDDocument document) throws IOException, PrinterException {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPageable(new PDFPageable(document));
         job.print();
@@ -77,8 +73,7 @@ public final class Printing
      * Prints using custom PrintRequestAttribute values.
      */
     private static void printWithAttributes(PDDocument document)
-            throws IOException, PrinterException
-    {
+            throws IOException, PrinterException {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPageable(new PDFPageable(document));
 
@@ -91,13 +86,11 @@ public final class Printing
     /**
      * Prints with a print preview dialog.
      */
-    private static void printWithDialog(PDDocument document) throws IOException, PrinterException
-    {
+    private static void printWithDialog(PDDocument document) throws IOException, PrinterException {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPageable(new PDFPageable(document));
 
-        if (job.printDialog())
-        {
+        if (job.printDialog()) {
             job.print();
         }
     }
@@ -106,26 +99,23 @@ public final class Printing
      * Prints with a print preview dialog and custom PrintRequestAttribute values.
      */
     private static void printWithDialogAndAttributes(PDDocument document)
-            throws IOException, PrinterException
-    {
+            throws IOException, PrinterException {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPageable(new PDFPageable(document));
 
         PrintRequestAttributeSet attr = new HashPrintRequestAttributeSet();
         attr.add(new PageRanges(1, 1)); // pages 1 to 1
 
-        if (job.printDialog(attr))
-        {
+        if (job.printDialog(attr)) {
             job.print(attr);
         }
     }
-    
+
     /**
      * Prints using a custom page size and custom margins.
      */
     private static void printWithPaper(PDDocument document)
-            throws IOException, PrinterException
-    {
+            throws IOException, PrinterException {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPageable(new PDFPageable(document));
 
@@ -137,13 +127,13 @@ public final class Printing
         // custom page format
         PageFormat pageFormat = new PageFormat();
         pageFormat.setPaper(paper);
-        
+
         // override the page format
         Book book = new Book();
         // append all pages
         book.append(new PDFPrintable(document), pageFormat, document.getNumberOfPages());
         job.setPageable(book);
-        
+
         job.print();
     }
 }

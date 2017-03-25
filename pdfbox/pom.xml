@@ -127,11 +127,11 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Include-Resource>
+                        <!--<Include-Resource>
                             {maven-resources},
                             META-INF=target/maven-shared-archive-resources/META-INF,
                             org/apache/pdfbox/resources=target/classes/org/apache/pdfbox/resources
-                        </Include-Resource>
+                        </Include-Resource>-->
                     </instructions>
                 </configuration>
             </plugin>
