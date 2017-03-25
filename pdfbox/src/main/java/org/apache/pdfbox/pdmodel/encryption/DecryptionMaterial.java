@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.pdmodel.encryption;
 
 /**
@@ -24,6 +23,5 @@ package org.apache.pdfbox.pdmodel.encryption;
  *
  * @author Benoit Guillon
  */
-public abstract class DecryptionMaterial
-{
+public abstract class DecryptionMaterial {
 }

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.pdmodel.encryption;
 
 import org.apache.pdfbox.cos.COSDictionary;
@@ -23,22 +22,19 @@ import org.apache.pdfbox.cos.COSDictionary;
  * @deprecated Use {@link PDEncryption } instead
  */
 @Deprecated
-public class PDEncryptionDictionary extends PDEncryption
-{
-    /**
-     * @deprecated Use {@link PDEncryption } instead
-     */
-    public PDEncryptionDictionary()
-    {
-        super();
-    }
+public class PDEncryptionDictionary extends PDEncryption {
+  /**
+   * @deprecated Use {@link PDEncryption } instead
+   */
+  public PDEncryptionDictionary() {
+    super();
+  }
 
-    /**
-     * @deprecated Use {@link PDEncryption#PDEncryption(COSDictionary) } instead
-     * @param dictionary a COS encryption dictionary
-     */
-    public PDEncryptionDictionary(COSDictionary dictionary)
-    {
-        super(dictionary);
-    }
+  /**
+   * @param dictionary a COS encryption dictionary
+   * @deprecated Use {@link PDEncryption#PDEncryption(COSDictionary) } instead
+   */
+  public PDEncryptionDictionary(COSDictionary dictionary) {
+    super(dictionary);
+  }
 }

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.pdmodel.encryption;
 
 import java.security.cert.X509Certificate;
@@ -24,14 +23,14 @@ import java.util.List;
 
 /**
  * The protection policy to use to protect a document with the public key security handler.
- *
+ * <p>
  * PDF documents are encrypted so that they can be decrypted by
  * one or more recipients. Each recipient have its own access permission.
- *
+ * <p>
  * The following code sample shows how to protect a document using
  * the public key security handler. In this code sample, <code>doc</code> is
  * a <code>PDDocument</code> object.
- *
+ * <p>
  * <pre>
  * PublicKeyProtectionPolicy policy = new PublicKeyProtectionPolicy();
  * PublicKeyRecipient recip = new PublicKeyRecipient();
@@ -52,76 +51,74 @@ import java.util.List;
  * doc.save(out);
  * </pre>
  *
+ * @author Benoit Guillon
  * @see org.apache.pdfbox.pdmodel.PDDocument#protect(ProtectionPolicy)
  * @see AccessPermission
  * @see PublicKeyRecipient
- * @author Benoit Guillon
  */
-public final class PublicKeyProtectionPolicy extends ProtectionPolicy
-{
-    private final List<PublicKeyRecipient> recipients = new ArrayList<PublicKeyRecipient>();
-    private X509Certificate decryptionCertificate;
+public final class PublicKeyProtectionPolicy extends ProtectionPolicy {
+  private final List<PublicKeyRecipient> recipients = new ArrayList<PublicKeyRecipient>();
+  private X509Certificate decryptionCertificate;
 
-    /**
-     * Creates a new PublicKeyProtectionPolicy with an empty recipients list.
-     */
-    public PublicKeyProtectionPolicy()
-    {
-    }
+  /**
+   * Creates a new PublicKeyProtectionPolicy with an empty recipients list.
+   */
+  public PublicKeyProtectionPolicy() {
+  }
 
-    /**
-     * Adds a new recipient to the recipients list.
-     * @param recipient A new recipient.
-     */
-    public void addRecipient(PublicKeyRecipient recipient)
-    {
-        recipients.add(recipient);
-    }
+  /**
+   * Adds a new recipient to the recipients list.
+   *
+   * @param recipient A new recipient.
+   */
+  public void addRecipient(PublicKeyRecipient recipient) {
+    recipients.add(recipient);
+  }
 
-    /**
-     * Removes a recipient from the recipients list.
-     * @param recipient The recipient to remove.
-     * @return true If a recipient was found and removed.
-     */
-    public boolean removeRecipient(PublicKeyRecipient recipient)
-    {
-        return recipients.remove(recipient);
-    }
+  /**
+   * Removes a recipient from the recipients list.
+   *
+   * @param recipient The recipient to remove.
+   * @return true If a recipient was found and removed.
+   */
+  public boolean removeRecipient(PublicKeyRecipient recipient) {
+    return recipients.remove(recipient);
+  }
 
-    /**
-     * Returns an iterator to browse the list of recipients.
-     * Object found in this iterator are <code>PublicKeyRecipient</code>.
-     * @return The recipients list iterator.
-     */
-    public Iterator<PublicKeyRecipient> getRecipientsIterator()
-    {
-        return recipients.iterator();
-    }
+  /**
+   * Returns an iterator to browse the list of recipients.
+   * Object found in this iterator are <code>PublicKeyRecipient</code>.
+   *
+   * @return The recipients list iterator.
+   */
+  public Iterator<PublicKeyRecipient> getRecipientsIterator() {
+    return recipients.iterator();
+  }
 
-    /**
-     * Returns the decryption certificate.
-     * @return the decryption certificate
-     */
-    public X509Certificate getDecryptionCertificate()
-    {
-        return decryptionCertificate;
-    }
+  /**
+   * Returns the decryption certificate.
+   *
+   * @return the decryption certificate
+   */
+  public X509Certificate getDecryptionCertificate() {
+    return decryptionCertificate;
+  }
 
-    /**
-     * Sets the decryption certificate
-     * @param decryptionCertificate the new decryption certificate.
-     */
-    public void setDecryptionCertificate(X509Certificate decryptionCertificate)
-    {
-        this.decryptionCertificate = decryptionCertificate;
-    }
+  /**
+   * Sets the decryption certificate
+   *
+   * @param decryptionCertificate the new decryption certificate.
+   */
+  public void setDecryptionCertificate(X509Certificate decryptionCertificate) {
+    this.decryptionCertificate = decryptionCertificate;
+  }
 
-    /**
-     * Returns the number of recipients
-     * @return the number of recipients
-     */
-    public int getNumberOfRecipients()
-    {
-        return recipients.size();
-    }
+  /**
+   * Returns the number of recipients
+   *
+   * @return the number of recipients
+   */
+  public int getNumberOfRecipients() {
+    return recipients.size();
+  }
 }

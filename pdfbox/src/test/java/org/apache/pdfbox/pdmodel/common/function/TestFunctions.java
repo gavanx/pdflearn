@@ -25,32 +25,27 @@ import junit.framework.TestSuite;
 /**
  * Tests PDF functions.
  */
-public class TestFunctions extends TestCase
-{
+public class TestFunctions extends TestCase {
+  /**
+   * The main method to run tests.
+   *
+   * @param args The command line arguments.
+   */
+  public static void main(String[] args) {
+    String[] arg = {TestFunctions.class.getName()};
+    junit.textui.TestRunner.main(arg);
+  }
 
-    /**
-     * The main method to run tests.
-     *
-     * @param args The command line arguments.
-     */
-    public static void main( String[] args )
-    {
-        String[] arg = {TestFunctions.class.getName()};
-        junit.textui.TestRunner.main( arg );
-    }
-
-    /**
-     * This will get the suite of test that this class holds.
-     *
-     * @return All of the tests that this class holds.
-     */
-    public static Test suite()
-    {
-        TestSuite suite = new TestSuite(TestFunctions.class.getName());
-        suite.addTestSuite(TestOperators.class);
-        suite.addTestSuite(TestParser.class);
-        suite.addTestSuite(TestPDFunctionType4.class);
-        return suite;
-    }
-
+  /**
+   * This will get the suite of test that this class holds.
+   *
+   * @return All of the tests that this class holds.
+   */
+  public static Test suite() {
+    TestSuite suite = new TestSuite(TestFunctions.class.getName());
+    suite.addTestSuite(TestOperators.class);
+    suite.addTestSuite(TestParser.class);
+    suite.addTestSuite(TestPDFunctionType4.class);
+    return suite;
+  }
 }

@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.pdmodel.common;
 
 import java.io.IOException;
+
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSInteger;
@@ -27,35 +27,30 @@ import org.apache.pdfbox.cos.COSInteger;
  *
  * @author John Hewson
  */
-public class PDIntegerNameTreeNode extends PDNameTreeNode<COSInteger>
-{
-    /**
-     * Constructor.
-     */
-    public PDIntegerNameTreeNode()
-    {
-        super();
-    }
+public class PDIntegerNameTreeNode extends PDNameTreeNode<COSInteger> {
+  /**
+   * Constructor.
+   */
+  public PDIntegerNameTreeNode() {
+    super();
+  }
 
-    /**
-     * Constructor.
-     *
-     * @param dic The COS dictionary.
-     */
-    public PDIntegerNameTreeNode(COSDictionary dic)
-    {
-        super(dic);
-    }
+  /**
+   * Constructor.
+   *
+   * @param dic The COS dictionary.
+   */
+  public PDIntegerNameTreeNode(COSDictionary dic) {
+    super(dic);
+  }
 
-    @Override
-    protected COSInteger convertCOSToPD(COSBase base) throws IOException
-    {
-        return (COSInteger)base;
-    }
+  @Override
+  protected COSInteger convertCOSToPD(COSBase base) throws IOException {
+    return (COSInteger) base;
+  }
 
-    @Override
-    protected PDIntegerNameTreeNode createChildNode( COSDictionary dic )
-    {
-        return new PDIntegerNameTreeNode(dic);
-    }
+  @Override
+  protected PDIntegerNameTreeNode createChildNode(COSDictionary dic) {
+    return new PDIntegerNameTreeNode(dic);
+  }
 }

@@ -27,37 +27,27 @@ import org.junit.Test;
 
 /**
  * Tests for the FDFAnnotation class.
- * 
- * @author Johanneke Lamberink
  *
+ * @author Johanneke Lamberink
  */
-public class FDFAnnotationTest
-{
-
-    @Test
-    public void loadXFDFAnnotations() throws IOException
-    {
-        FDFDocument fdfDoc = null;
-        InputStream stream = null;
-        List<FDFAnnotation> fdfAnnots = new ArrayList<FDFAnnotation>();
-        try
-        {
-            stream = FDFAnnotationTest.class
-                    .getResourceAsStream("xfdf-test-document-annotations.xml");
-            fdfDoc = FDFDocument.loadXFDF(stream);
-            fdfAnnots = fdfDoc.getCatalog().getFDF().getAnnotations();
-            assertEquals(17, fdfAnnots.size());
-        }
-        finally
-        {
-            if (stream != null)
-            {
-                stream.close();
-            }
-            if (fdfDoc != null)
-            {
-                fdfDoc.close();
-            }
-        }
+public class FDFAnnotationTest {
+  @Test
+  public void loadXFDFAnnotations() throws IOException {
+    FDFDocument fdfDoc = null;
+    InputStream stream = null;
+    List<FDFAnnotation> fdfAnnots = new ArrayList<FDFAnnotation>();
+    try {
+      stream = FDFAnnotationTest.class.getResourceAsStream("xfdf-test-document-annotations.xml");
+      fdfDoc = FDFDocument.loadXFDF(stream);
+      fdfAnnots = fdfDoc.getCatalog().getFDF().getAnnotations();
+      assertEquals(17, fdfAnnots.size());
+    } finally {
+      if (stream != null) {
+        stream.close();
+      }
+      if (fdfDoc != null) {
+        fdfDoc.close();
+      }
     }
+  }
 }
