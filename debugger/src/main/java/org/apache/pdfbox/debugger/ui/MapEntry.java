@@ -19,90 +19,80 @@ package org.apache.pdfbox.debugger.ui;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 
-
 /**
  * This is a simple class that will contain a key and a value.
  *
  * @author Ben Litchfield
  */
-public class MapEntry
-{
-    private COSName key;
-    private COSBase value;
-    private COSBase item;
+public class MapEntry {
+  private COSName key;
+  private COSBase value;
+  private COSBase item;
 
-    /**
-     * Get the key for this entry.
-     *
-     * @return The entry's key.
-     */
-    public COSName getKey()
-    {
-        return key;
-    }
+  /**
+   * Get the key for this entry.
+   *
+   * @return The entry's key.
+   */
+  public COSName getKey() {
+    return key;
+  }
 
-    /**
-     * This will set the key for this entry.
-     *
-     * @param k the new key for this entry.
-     */
-    public void setKey(COSName k)
-    {
-        key = k;
-    }
+  /**
+   * This will set the key for this entry.
+   *
+   * @param k the new key for this entry.
+   */
+  public void setKey(COSName k) {
+    key = k;
+  }
 
-    /**
-     * This will get the value for this entry.
-     *
-     * @return The value for this entry.
-     */
-    public COSBase getValue()
-    {
-        return value;
-    }
+  /**
+   * This will get the value for this entry.
+   *
+   * @return The value for this entry.
+   */
+  public COSBase getValue() {
+    return value;
+  }
 
-    /**
-     * This will get the value for this entry.
-     *
-     * @return The value for this entry.
-     */
-    public COSBase getItem()
-    {
-        return item;
-    }
+  /**
+   * This will get the value for this entry.
+   *
+   * @return The value for this entry.
+   */
+  public COSBase getItem() {
+    return item;
+  }
 
-    /**
-     * This will set the value for this entry.
-     *
-     * @param val the new value for this entry.
-     */
-    public void setValue(COSBase val)
-    {
-        this.value = val;
-    }
+  /**
+   * This will set the value for this entry.
+   *
+   * @param val the new value for this entry.
+   */
+  public void setValue(COSBase val) {
+    this.value = val;
+  }
 
-    /**
-     * This will set the value for this entry.
-     *
-     * @param val the new value for this entry.
-     */
-    public void setItem(COSBase val)
-    {
-        this.item = val;
-    }
+  /**
+   * This will set the value for this entry.
+   *
+   * @param val the new value for this entry.
+   */
+  public void setItem(COSBase val) {
+    this.item = val;
+  }
 
-    /**
-     * This will output a string representation of this class.
-     *
-     * @return A string representation of this class.
-     */
-    @Override
-    public String toString()
-    {
-        if (key != null)
-        {
-            return key.getName();
-        }
-        return "(null)";
+  /**
+   * This will output a string representation of this class.
+   *
+   * @return A string representation of this class.
+   */
+  @Override
+  public String toString() {
+    if (key != null) {
+      return key.getName();
     }
+    return "(null)";
+  }
 }

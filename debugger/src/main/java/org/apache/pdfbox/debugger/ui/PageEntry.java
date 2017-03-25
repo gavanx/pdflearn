@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.debugger.ui;
 
 import org.apache.pdfbox.cos.COSArray;
@@ -26,49 +25,42 @@ import org.apache.pdfbox.cos.COSName;
  *
  * @author John Hewson
  */
-public class PageEntry
-{
-    private final COSDictionary dict;
-    private final int pageNum;
-    private final String pageLabel;    
+public class PageEntry {
+  private final COSDictionary dict;
+  private final int pageNum;
+  private final String pageLabel;
 
-    public PageEntry(COSDictionary page, int pageNum, String pageLabel)
-    {
-        dict = page;
-        this.pageNum = pageNum;
-        this.pageLabel = pageLabel;
-    }
-    
-    public COSDictionary getDict()
-    {
-        return dict;
-    }
+  public PageEntry(COSDictionary page, int pageNum, String pageLabel) {
+    dict = page;
+    this.pageNum = pageNum;
+    this.pageLabel = pageLabel;
+  }
 
-    public int getPageNum()
-    {
-        return pageNum;
+  public COSDictionary getDict() {
+    return dict;
+  }
+
+  public int getPageNum() {
+    return pageNum;
+  }
+
+  @Override
+  public String toString() {
+    return "Page: " + pageNum + (pageLabel == null ? "" : " - " + pageLabel);
+  }
+
+  public String getPath() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Root/Pages");
+
+    COSDictionary node = dict;
+    while (node.containsKey(COSName.PARENT)) {
+      COSDictionary parent = (COSDictionary) node.getDictionaryObject(COSName.PARENT);
+      COSArray kids = (COSArray) parent.getDictionaryObject(COSName.KIDS);
+      int idx = kids.indexOfObject(node);
+      sb.append("/Kids/[").append(idx).append("]");
+      node = parent;
     }
-    
-    @Override
-    public String toString()
-    {
-        return "Page: " + pageNum + (pageLabel == null ? "" : " - " + pageLabel);
-    }
-    
-    public String getPath()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Root/Pages");
-        
-        COSDictionary node = dict;
-        while (node.containsKey(COSName.PARENT))
-        {
-            COSDictionary parent = (COSDictionary)node.getDictionaryObject(COSName.PARENT);
-            COSArray kids = (COSArray)parent.getDictionaryObject(COSName.KIDS);
-            int idx = kids.indexOfObject(node);
-            sb.append("/Kids/[").append(idx).append("]");
-            node = parent;
-        }
-        return sb.toString();
-    }
+    return sb.toString();
+  }
 }

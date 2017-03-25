@@ -20,34 +20,29 @@ import java.awt.Graphics;
 import java.awt.Image;
 import javax.swing.Icon;
 
-public class HighResolutionImageIcon implements Icon
-{
-    private final Image image;
-    private final int baseWidth;
-    private final int baseHeight;
+public class HighResolutionImageIcon implements Icon {
+  private final Image image;
+  private final int baseWidth;
+  private final int baseHeight;
 
-    public HighResolutionImageIcon(Image image, int baseWidth, int baseHeight)
-    {
-        this.image = image;
-        this.baseWidth = baseWidth;
-        this.baseHeight = baseHeight;
-    }
+  public HighResolutionImageIcon(Image image, int baseWidth, int baseHeight) {
+    this.image = image;
+    this.baseWidth = baseWidth;
+    this.baseHeight = baseHeight;
+  }
 
-    @Override
-    public void paintIcon(Component c, Graphics g, int x, int y)
-    {
-        g.drawImage(image, x, y, getIconWidth(), getIconHeight(), null);
-    }
+  @Override
+  public void paintIcon(Component c, Graphics g, int x, int y) {
+    g.drawImage(image, x, y, getIconWidth(), getIconHeight(), null);
+  }
 
-    @Override
-    public int getIconWidth()
-    {
-        return baseWidth;
-    }
+  @Override
+  public int getIconWidth() {
+    return baseWidth;
+  }
 
-    @Override
-    public int getIconHeight()
-    {
-        return baseHeight;
-    }
+  @Override
+  public int getIconHeight() {
+    return baseHeight;
+  }
 }

@@ -21,62 +21,52 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 /**
- *
  * @author Khyrul Bashar
  * @author Tilman Hausherr
- *
- * Base class.
+ *         <p>
+ *         Base class.
  */
-abstract class MenuBase
-{
-    private JMenu menu = null;
+abstract class MenuBase {
+  private JMenu menu = null;
 
-    protected void setMenu(JMenu menu)
-    {
-        this.menu = menu;
-    }
-    
-    /**
-     * Provide the JMenu instance of the ZoomMenu.
-     *
-     * @return JMenu instance.
-     */
-    public JMenu getMenu()
-    {
-        return this.menu;
-    }
+  protected void setMenu(JMenu menu) {
+    this.menu = menu;
+  }
 
-    /**
-     * Set if the menu should be enabled or disabled.
-     *
-     * @param isEnable boolean instance.
-     */
-    public void setEnableMenu(boolean isEnable)
-    {
-        menu.setEnabled(isEnable);
-    }
+  /**
+   * Provide the JMenu instance of the ZoomMenu.
+   *
+   * @return JMenu instance.
+   */
+  public JMenu getMenu() {
+    return this.menu;
+  }
 
-    /**
-     * Add the ActionListener for the menuitems.
-     *
-     * @param listener ActionListener.
-     */
-    public void addMenuListeners(ActionListener listener)
-    {
-        for (Component comp : menu.getMenuComponents())
-        {
-            JMenuItem menuItem = (JMenuItem) comp;
-            removeActionListeners(menuItem);
-            menuItem.addActionListener(listener);
-        }
-    }
+  /**
+   * Set if the menu should be enabled or disabled.
+   *
+   * @param isEnable boolean instance.
+   */
+  public void setEnableMenu(boolean isEnable) {
+    menu.setEnabled(isEnable);
+  }
 
-    private void removeActionListeners(JMenuItem menuItem)
-    {
-        for (ActionListener listener : menuItem.getActionListeners())
-        {
-            menuItem.removeActionListener(listener);
-        }
+  /**
+   * Add the ActionListener for the menuitems.
+   *
+   * @param listener ActionListener.
+   */
+  public void addMenuListeners(ActionListener listener) {
+    for (Component comp : menu.getMenuComponents()) {
+      JMenuItem menuItem = (JMenuItem) comp;
+      removeActionListeners(menuItem);
+      menuItem.addActionListener(listener);
     }
+  }
 
+  private void removeActionListeners(JMenuItem menuItem) {
+    for (ActionListener listener : menuItem.getActionListeners()) {
+      menuItem.removeActionListener(listener);
+    }
+  }
 }

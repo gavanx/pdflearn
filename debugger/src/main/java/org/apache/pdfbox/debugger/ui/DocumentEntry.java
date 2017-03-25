@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.debugger.ui;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -26,37 +25,31 @@ import org.apache.pdfbox.debugger.PDFDebugger;
  *
  * @author John Hewson
  */
-public class DocumentEntry
-{
-    private final PDDocument doc;
-    private final String filename;
-    
-    public DocumentEntry(PDDocument doc, String filename)
-    {
-        this.doc = doc;
-        this.filename = filename;
-    }
-    
-    public int getPageCount()
-    {
-        return doc.getPages().getCount();
-    }
-    
-    public PageEntry getPage(int index)
-    {
-        PDPage page = doc.getPages().get(index);
-        String pageLabel = PDFDebugger.getPageLabel(doc, index);
-        return new PageEntry(page.getCOSObject(), index + 1, pageLabel);
-    }
-    
-    public int indexOf(PageEntry page)
-    {
-        return page.getPageNum() - 1;
-    }
+public class DocumentEntry {
+  private final PDDocument doc;
+  private final String filename;
 
-    @Override
-    public String toString()
-    {
-        return filename;
-    }
+  public DocumentEntry(PDDocument doc, String filename) {
+    this.doc = doc;
+    this.filename = filename;
+  }
+
+  public int getPageCount() {
+    return doc.getPages().getCount();
+  }
+
+  public PageEntry getPage(int index) {
+    PDPage page = doc.getPages().get(index);
+    String pageLabel = PDFDebugger.getPageLabel(doc, index);
+    return new PageEntry(page.getCOSObject(), index + 1, pageLabel);
+  }
+
+  public int indexOf(PageEntry page) {
+    return page.getPageNum() - 1;
+  }
+
+  @Override
+  public String toString() {
+    return filename;
+  }
 }

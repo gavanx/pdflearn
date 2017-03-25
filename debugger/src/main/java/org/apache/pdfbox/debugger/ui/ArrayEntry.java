@@ -23,69 +23,62 @@ import org.apache.pdfbox.cos.COSBase;
  *
  * @author Ben Litchfield
  */
-public class ArrayEntry
-{
-    private int index;
-    private COSBase value;
-    private COSBase item;
+public class ArrayEntry {
+  private int index;
+  private COSBase value;
+  private COSBase item;
 
-    /**
-     * This will get the value for this entry.
-     *
-     * @return The value for this entry.
-     */
-    public COSBase getValue()
-    {
-        return value;
-    }
+  /**
+   * This will get the value for this entry.
+   *
+   * @return The value for this entry.
+   */
+  public COSBase getValue() {
+    return value;
+  }
 
-    /**
-     * This will get the value for this entry.
-     *
-     * @return The value for this entry.
-     */
-    public COSBase getItem()
-    {
-        return item;
-    }
+  /**
+   * This will get the value for this entry.
+   *
+   * @return The value for this entry.
+   */
+  public COSBase getItem() {
+    return item;
+  }
 
-    /**
-     * This will set the value for this entry.
-     *
-     * @param val the new value for this entry.
-     */
-    public void setValue(COSBase val)
-    {
-        this.value = val;
-    }
+  /**
+   * This will set the value for this entry.
+   *
+   * @param val the new value for this entry.
+   */
+  public void setValue(COSBase val) {
+    this.value = val;
+  }
 
-    /**
-     * This will set the value for this entry.
-     *
-     * @param val the new value for this entry.
-     */
-    public void setItem(COSBase val)
-    {
-        this.item = val;
-    }
+  /**
+   * This will set the value for this entry.
+   *
+   * @param val the new value for this entry.
+   */
+  public void setItem(COSBase val) {
+    this.item = val;
+  }
 
-    /**
-     * This will get the index of the array entry.
-     *
-     * @return The 0-based index into the array
-     */
-    public int getIndex()
-    {
-        return index;
-    }
+  /**
+   * This will get the index of the array entry.
+   *
+   * @return The 0-based index into the array
+   */
+  public int getIndex() {
+    return index;
+  }
 
-    /**
-     * This will set the index value.
-     *
-     * @param i The new index value.
-     */
-    public void setIndex(int i)
-    {
-        index = i;
-    }
+  /**
+   * This will set the index value.
+   *
+   * @param i The new index value.
+   */
+  public void setIndex(int i) {
+    index = i;
+  }
 }

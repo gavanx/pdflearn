@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.debugger.treestatus;
 
 import java.awt.BorderLayout;
@@ -34,94 +33,83 @@ import javax.swing.tree.TreePath;
 /**
  * @author Khyrul Bashar
  */
-public class TreeStatusPane implements TreeSelectionListener
-{
-    private TreeStatus statusObj;
-    private JTree tree;
-
-    private JTextField statusField;
-    private JPanel panel;
-    private Border defaultBorder;
-    private Border errorBorder;
-    private final Action textInputAction = new AbstractAction()
-    {
-        @Override
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-            TreePath path = statusObj.getPathForString(statusField.getText());
-            if (path != null)
-            {
-                tree.setSelectionPath(path);
-                tree.scrollPathToVisible(path);
-                tree.requestFocusInWindow();
-            }
-            else
-            {
-                statusField.setBorder(errorBorder);
-            }
-        }
-    };
-
-    /**
-     * Constructor.
-     * @param targetTree The tree instance that this status pane will correspond.
-     */
-    public TreeStatusPane(JTree targetTree)
-    {
-        tree = targetTree;
-        init();
-    }
-
-    private void init()
-    {
-        panel = new JPanel(new BorderLayout());
-        statusField = new JTextField();
-        statusField.setEditable(false);
-        panel.add(statusField);
-        defaultBorder = new BevelBorder(BevelBorder.LOWERED);
-        errorBorder = new BevelBorder(BevelBorder.LOWERED, Color.RED, Color.RED);
-        statusField.setAction(textInputAction);
-        tree.addTreeSelectionListener(this);
-    }
-
-    /**
-     * Return the panel of this TreeStatusPane.
-     * @return JPanel instance.
-     */
-    public JPanel getPanel()
-    {
-        return panel;
-    }
-
-    /**
-     * In case of document changing this should be called to update TreeStatus value of the pane.
-     * @param statusObj TreeStatus instance.
-     */
-    public void updateTreeStatus(TreeStatus statusObj)
-    {
-        statusField.setEditable(true);
-        this.statusObj = statusObj;
-        updateText(null);
-    }
-
-    private void updateText(String statusString)
-    {
-        statusField.setText(statusString);
-        if (!statusField.getBorder().equals(defaultBorder))
-        {
-            statusField.setBorder(defaultBorder);
-        }
-    }
-
-    /**
-     * Tree selection change listener which updates status string.
-     * @param treeSelectionEvent
-     */
-
+public class TreeStatusPane implements TreeSelectionListener {
+  private TreeStatus statusObj;
+  private JTree tree;
+  private JTextField statusField;
+  private JPanel panel;
+  private Border defaultBorder;
+  private Border errorBorder;
+  private final Action textInputAction = new AbstractAction() {
     @Override
-    public void valueChanged(TreeSelectionEvent treeSelectionEvent)
-    {
-        TreePath path = treeSelectionEvent.getPath();
-        updateText(statusObj.getStringForPath(path));
+    public void actionPerformed(ActionEvent actionEvent) {
+      TreePath path = statusObj.getPathForString(statusField.getText());
+      if (path != null) {
+        tree.setSelectionPath(path);
+        tree.scrollPathToVisible(path);
+        tree.requestFocusInWindow();
+      } else {
+        statusField.setBorder(errorBorder);
+      }
     }
+  };
+
+  /**
+   * Constructor.
+   *
+   * @param targetTree The tree instance that this status pane will correspond.
+   */
+  public TreeStatusPane(JTree targetTree) {
+    tree = targetTree;
+    init();
+  }
+
+  private void init() {
+    panel = new JPanel(new BorderLayout());
+    statusField = new JTextField();
+    statusField.setEditable(false);
+    panel.add(statusField);
+    defaultBorder = new BevelBorder(BevelBorder.LOWERED);
+    errorBorder = new BevelBorder(BevelBorder.LOWERED, Color.RED, Color.RED);
+    statusField.setAction(textInputAction);
+    tree.addTreeSelectionListener(this);
+  }
+
+  /**
+   * Return the panel of this TreeStatusPane.
+   *
+   * @return JPanel instance.
+   */
+  public JPanel getPanel() {
+    return panel;
+  }
+
+  /**
+   * In case of document changing this should be called to update TreeStatus value of the pane.
+   *
+   * @param statusObj TreeStatus instance.
+   */
+  public void updateTreeStatus(TreeStatus statusObj) {
+    statusField.setEditable(true);
+    this.statusObj = statusObj;
+    updateText(null);
+  }
+
+  private void updateText(String statusString) {
+    statusField.setText(statusString);
+    if (!statusField.getBorder().equals(defaultBorder)) {
+      statusField.setBorder(defaultBorder);
+    }
+  }
+
+  /**
+   * Tree selection change listener which updates status string.
+   *
+   * @param treeSelectionEvent
+   */
+  @Override
+  public void valueChanged(TreeSelectionEvent treeSelectionEvent) {
+    TreePath path = treeSelectionEvent.getPath();
+    updateText(statusObj.getStringForPath(path));
+  }
 }

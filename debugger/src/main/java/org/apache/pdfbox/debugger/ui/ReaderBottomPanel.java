@@ -31,49 +31,42 @@ import javax.swing.border.EmptyBorder;
  *
  * @author Ben Litchfield
  */
-public class ReaderBottomPanel extends JPanel
-{
-    private JLabel statusLabel = null;
-    private JLabel logLabel = null;
-    
-    public ReaderBottomPanel()
-    {
-        BorderLayout layout = new BorderLayout();
-        this.setLayout(layout);
-        
-        statusLabel = new JLabel();
-        statusLabel.setText("Ready");
-        this.add(statusLabel, BorderLayout.WEST);
+public class ReaderBottomPanel extends JPanel {
+  private JLabel statusLabel = null;
+  private JLabel logLabel = null;
 
-        logLabel = new JLabel();
-        logLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        logLabel.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                Window viewer = LogDialog.instance().getOwner();
-                
-                // show the log window
-                LogDialog.instance().setSize(800, 400);
-                LogDialog.instance().setVisible(true);
-                LogDialog.instance().setLocation(viewer.getLocationOnScreen().x + viewer.getWidth() / 2,
-                                                 viewer.getLocationOnScreen().y + viewer.getHeight() / 2);
-            }
-        });
-        this.add(logLabel, BorderLayout.EAST);
+  public ReaderBottomPanel() {
+    BorderLayout layout = new BorderLayout();
+    this.setLayout(layout);
 
-        this.setBorder(new EmptyBorder(0, 5, 0, 5));
-        this.setPreferredSize(new Dimension(1000, 24));
-    }
-    
-    public JLabel getStatusLabel()
-    {
-        return statusLabel;
-    }
+    statusLabel = new JLabel();
+    statusLabel.setText("Ready");
+    this.add(statusLabel, BorderLayout.WEST);
 
-    public JLabel getLogLabel()
-    {
-        return logLabel;
-    }
+    logLabel = new JLabel();
+    logLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    logLabel.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        Window viewer = LogDialog.instance().getOwner();
+
+        // show the log window
+        LogDialog.instance().setSize(800, 400);
+        LogDialog.instance().setVisible(true);
+        LogDialog.instance().setLocation(viewer.getLocationOnScreen().x + viewer.getWidth() / 2, viewer.getLocationOnScreen().y + viewer.getHeight() / 2);
+      }
+    });
+    this.add(logLabel, BorderLayout.EAST);
+
+    this.setBorder(new EmptyBorder(0, 5, 0, 5));
+    this.setPreferredSize(new Dimension(1000, 24));
+  }
+
+  public JLabel getStatusLabel() {
+    return statusLabel;
+  }
+
+  public JLabel getLogLabel() {
+    return logLabel;
+  }
 }
