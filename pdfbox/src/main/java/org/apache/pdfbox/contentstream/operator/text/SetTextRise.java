@@ -30,27 +30,22 @@ import java.io.IOException;
  *
  * @author Ben Litchfield
  */
-public class SetTextRise extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        if (arguments.size() < 1)
-        {
-            return;
-        }
-        COSBase base = arguments.get(0);
-        if (!(base instanceof COSNumber))
-        {
-            return;
-        }
-        COSNumber rise = (COSNumber) base;
-        context.getGraphicsState().getTextState().setRise( rise.floatValue() );
+public class SetTextRise extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    if (arguments.size() < 1) {
+      return;
     }
+    COSBase base = arguments.get(0);
+    if (!(base instanceof COSNumber)) {
+      return;
+    }
+    COSNumber rise = (COSNumber) base;
+    context.getGraphicsState().getTextState().setRise(rise.floatValue());
+  }
 
-    @Override
-    public String getName()
-    {
-        return "Ts";
-    }
+  @Override
+  public String getName() {
+    return "Ts";
+  }
 }

@@ -29,19 +29,16 @@ import java.util.List;
  *
  * @author John Hewson
  */
-public class SetStrokingDeviceCMYKColor extends SetStrokingColor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        PDColorSpace cs = context.getResources().getColorSpace(COSName.DEVICECMYK);
-        context.getGraphicsState().setStrokingColorSpace(cs);
-        super.process(operator, arguments);
-    }
+public class SetStrokingDeviceCMYKColor extends SetStrokingColor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    PDColorSpace cs = context.getResources().getColorSpace(COSName.DEVICECMYK);
+    context.getGraphicsState().setStrokingColorSpace(cs);
+    super.process(operator, arguments);
+  }
 
-    @Override
-    public String getName()
-    {
-        return "K";
-    }
+  @Override
+  public String getName() {
+    return "K";
+  }
 }

@@ -28,17 +28,14 @@ import org.apache.pdfbox.contentstream.operator.Operator;
  *
  * @author Daniel Wilson
  */
-public class ClipNonZeroRule extends GraphicsOperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> operands) throws IOException
-    {
-        context.clip(GeneralPath.WIND_NON_ZERO);
-    }
+public class ClipNonZeroRule extends GraphicsOperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> operands) throws IOException {
+    context.clip(GeneralPath.WIND_NON_ZERO);
+  }
 
-    @Override
-    public String getName()
-    {
-        return "W";
-    }
+  @Override
+  public String getName() {
+    return "W";
+  }
 }

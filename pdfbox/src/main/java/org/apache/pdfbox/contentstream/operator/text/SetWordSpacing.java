@@ -28,27 +28,22 @@ import org.apache.pdfbox.contentstream.operator.OperatorProcessor;
  *
  * @author Laurent Huault
  */
-public class SetWordSpacing extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments)
-    {
-        if (arguments.size() < 1)
-        {
-            return;
-        }
-        COSBase base = arguments.get(0);
-        if (!(base instanceof COSNumber))
-        {
-            return;
-        }
-        COSNumber wordSpacing = (COSNumber) base;
-        context.getGraphicsState().getTextState().setWordSpacing( wordSpacing.floatValue() );
+public class SetWordSpacing extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) {
+    if (arguments.size() < 1) {
+      return;
     }
+    COSBase base = arguments.get(0);
+    if (!(base instanceof COSNumber)) {
+      return;
+    }
+    COSNumber wordSpacing = (COSNumber) base;
+    context.getGraphicsState().getTextState().setWordSpacing(wordSpacing.floatValue());
+  }
 
-    @Override
-    public String getName()
-    {
-        return "Tw";
-    }
+  @Override
+  public String getName() {
+    return "Tw";
+  }
 }

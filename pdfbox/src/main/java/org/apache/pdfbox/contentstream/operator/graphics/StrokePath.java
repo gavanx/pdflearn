@@ -28,17 +28,14 @@ import java.io.IOException;
  *
  * @author Ben Litchfield
  */
-public final class StrokePath extends GraphicsOperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> operands) throws IOException
-    {
-        context.strokePath();
-    }
+public final class StrokePath extends GraphicsOperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> operands) throws IOException {
+    context.strokePath();
+  }
 
-    @Override
-    public String getName()
-    {
-        return "S";
-    }
+  @Override
+  public String getName() {
+    return "S";
+  }
 }

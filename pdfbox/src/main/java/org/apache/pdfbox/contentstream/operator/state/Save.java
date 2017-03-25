@@ -27,17 +27,14 @@ import org.apache.pdfbox.contentstream.operator.OperatorProcessor;
  *
  * @author Laurent Huault
  */
-public class Save extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments)
-    {
-        context.saveGraphicsState();
-    }
+public class Save extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) {
+    context.saveGraphicsState();
+  }
 
-    @Override
-    public String getName()
-    {
-        return "q";
-    }
+  @Override
+  public String getName() {
+    return "q";
+  }
 }

@@ -22,11 +22,9 @@ package org.apache.pdfbox.contentstream.operator.graphics;
  *
  * @author John Hewson
  */
-public final class LegacyFillNonZeroRule extends FillNonZeroRule
-{
-    @Override
-    public String getName()
-    {
-        return "F";
-    }
+public final class LegacyFillNonZeroRule extends FillNonZeroRule {
+  @Override
+  public String getName() {
+    return "F";
+  }
 }

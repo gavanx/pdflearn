@@ -32,47 +32,37 @@ import org.apache.pdfbox.contentstream.operator.Operator;
  *
  * @author Ben Litchfield
  */
-public class CurveToReplicateInitialPoint extends GraphicsOperatorProcessor
-{
-    private static final Log LOG = LogFactory.getLog(CurveToReplicateInitialPoint.class);
-    
-    @Override
-    public void process(Operator operator, List<COSBase> operands) throws IOException
-    {
-        if (operands.size() < 4)
-        {
-            throw new MissingOperandException(operator, operands);
-        }
-        if (!checkArrayTypesClass(operands, COSNumber.class))
-        {
-            return;
-        }
-        COSNumber x2 = (COSNumber)operands.get(0);
-        COSNumber y2 = (COSNumber)operands.get(1);
-        COSNumber x3 = (COSNumber)operands.get(2);
-        COSNumber y3 = (COSNumber)operands.get(3);
+public class CurveToReplicateInitialPoint extends GraphicsOperatorProcessor {
+  private static final Log LOG = LogFactory.getLog(CurveToReplicateInitialPoint.class);
 
-        Point2D currentPoint = context.getCurrentPoint();
-
-        Point2D.Float point2 = context.transformedPoint(x2.floatValue(), y2.floatValue());
-        Point2D.Float point3 = context.transformedPoint(x3.floatValue(), y3.floatValue());
-
-        if (currentPoint == null)
-        {
-            LOG.warn("curveTo (" + point3.x + "," + point3.y + ") without initial MoveTo");
-            context.moveTo(point3.x, point3.y);
-        }
-        else
-        {
-            context.curveTo((float) currentPoint.getX(), (float) currentPoint.getY(),
-                    point2.x, point2.y,
-                    point3.x, point3.y);
-        }
+  @Override
+  public void process(Operator operator, List<COSBase> operands) throws IOException {
+    if (operands.size() < 4) {
+      throw new MissingOperandException(operator, operands);
     }
-
-    @Override
-    public String getName()
-    {
-        return "v";
+    if (!checkArrayTypesClass(operands, COSNumber.class)) {
+      return;
     }
+    COSNumber x2 = (COSNumber) operands.get(0);
+    COSNumber y2 = (COSNumber) operands.get(1);
+    COSNumber x3 = (COSNumber) operands.get(2);
+    COSNumber y3 = (COSNumber) operands.get(3);
+
+    Point2D currentPoint = context.getCurrentPoint();
+
+    Point2D.Float point2 = context.transformedPoint(x2.floatValue(), y2.floatValue());
+    Point2D.Float point3 = context.transformedPoint(x3.floatValue(), y3.floatValue());
+
+    if (currentPoint == null) {
+      LOG.warn("curveTo (" + point3.x + "," + point3.y + ") without initial MoveTo");
+      context.moveTo(point3.x, point3.y);
+    } else {
+      context.curveTo((float) currentPoint.getX(), (float) currentPoint.getY(), point2.x, point2.y, point3.x, point3.y);
+    }
+  }
+
+  @Override
+  public String getName() {
+    return "v";
+  }
 }

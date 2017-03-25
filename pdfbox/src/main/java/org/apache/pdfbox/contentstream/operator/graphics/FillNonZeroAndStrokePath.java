@@ -30,17 +30,14 @@ import java.io.IOException;
  *
  * @author Ben Litchfield
  */
-public class FillNonZeroAndStrokePath extends GraphicsOperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> operands) throws IOException
-    {
-        context.fillAndStrokePath(GeneralPath.WIND_NON_ZERO);
-    }
+public class FillNonZeroAndStrokePath extends GraphicsOperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> operands) throws IOException {
+    context.fillAndStrokePath(GeneralPath.WIND_NON_ZERO);
+  }
 
-    @Override
-    public String getName()
-    {
-        return "B";
-    }
+  @Override
+  public String getName() {
+    return "B";
+  }
 }

@@ -28,17 +28,14 @@ import org.apache.pdfbox.contentstream.operator.Operator;
  *
  * @author Daniel Wilson
  */
-public final class ClipEvenOddRule extends GraphicsOperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> operands) throws IOException
-    {
-        context.clip(GeneralPath.WIND_EVEN_ODD);
-    }
+public final class ClipEvenOddRule extends GraphicsOperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> operands) throws IOException {
+    context.clip(GeneralPath.WIND_EVEN_ODD);
+  }
 
-    @Override
-    public String getName()
-    {
-        return "W*";
-    }
+  @Override
+  public String getName() {
+    return "W*";
+  }
 }

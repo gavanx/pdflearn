@@ -25,46 +25,44 @@ import org.apache.pdfbox.pdmodel.graphics.color.PDJPXColorSpace;
  *
  * @author John Hewson
  */
-public final class DecodeResult
-{
-    /** Default decode result. */
-    public static final DecodeResult DEFAULT = new DecodeResult(new COSDictionary());
+public final class DecodeResult {
+  /**
+   * Default decode result.
+   */
+  public static final DecodeResult DEFAULT = new DecodeResult(new COSDictionary());
 
-    private final COSDictionary parameters;
-    private PDJPXColorSpace colorSpace;
+  private final COSDictionary parameters;
+  private PDJPXColorSpace colorSpace;
 
-    DecodeResult(COSDictionary parameters)
-    {
-        this.parameters = parameters;
-    }
+  DecodeResult(COSDictionary parameters) {
+    this.parameters = parameters;
+  }
 
-    DecodeResult(COSDictionary parameters, PDJPXColorSpace colorSpace)
-    {
-        this.parameters = parameters;
-        this.colorSpace = colorSpace;
-    }
+  DecodeResult(COSDictionary parameters, PDJPXColorSpace colorSpace) {
+    this.parameters = parameters;
+    this.colorSpace = colorSpace;
+  }
 
-    /**
-     * Returns the stream parameters, repaired using the embedded stream data.
-     * @return the repaired stream parameters, or an empty dictionary
-     */
-    public COSDictionary getParameters()
-    {
-        return parameters;
-    }
+  /**
+   * Returns the stream parameters, repaired using the embedded stream data.
+   *
+   * @return the repaired stream parameters, or an empty dictionary
+   */
+  public COSDictionary getParameters() {
+    return parameters;
+  }
 
-    /**
-     * Returns the embedded JPX color space, if any.
-     * @return the the embedded JPX color space, or null if there is none.
-     */
-    public PDJPXColorSpace getJPXColorSpace()
-    {
-        return colorSpace;
-    }
+  /**
+   * Returns the embedded JPX color space, if any.
+   *
+   * @return the the embedded JPX color space, or null if there is none.
+   */
+  public PDJPXColorSpace getJPXColorSpace() {
+    return colorSpace;
+  }
 
-    // Sets the JPX color space
-    void setColorSpace(PDJPXColorSpace colorSpace)
-    {
-        this.colorSpace = colorSpace;
-    }
+  // Sets the JPX color space
+  void setColorSpace(PDJPXColorSpace colorSpace) {
+    this.colorSpace = colorSpace;
+  }
 }

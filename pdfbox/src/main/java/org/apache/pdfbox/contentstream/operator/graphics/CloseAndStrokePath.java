@@ -28,18 +28,15 @@ import java.io.IOException;
  *
  * @author Ben Litchfield
  */
-public class CloseAndStrokePath extends GraphicsOperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        context.processOperator( "h", arguments );
-        context.processOperator( "S", arguments );
-    }
+public class CloseAndStrokePath extends GraphicsOperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    context.processOperator("h", arguments);
+    context.processOperator("S", arguments);
+  }
 
-    @Override
-    public String getName()
-    {
-        return "s";
-    }
+  @Override
+  public String getName() {
+    return "s";
+  }
 }

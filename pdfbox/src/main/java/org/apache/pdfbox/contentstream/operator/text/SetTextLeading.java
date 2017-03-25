@@ -28,18 +28,15 @@ import org.apache.pdfbox.contentstream.operator.OperatorProcessor;
  *
  * @author Laurent Huault
  */
-public class SetTextLeading extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments)
-    {
-        COSNumber leading = (COSNumber)arguments.get( 0 );
-        context.getGraphicsState().getTextState().setLeading( leading.floatValue() );
-    }
+public class SetTextLeading extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) {
+    COSNumber leading = (COSNumber) arguments.get(0);
+    context.getGraphicsState().getTextState().setLeading(leading.floatValue());
+  }
 
-    @Override
-    public String getName()
-    {
-        return "TL";
-    }
+  @Override
+  public String getName() {
+    return "TL";
+  }
 }

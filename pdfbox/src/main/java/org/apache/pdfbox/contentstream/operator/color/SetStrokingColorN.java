@@ -23,11 +23,9 @@ package org.apache.pdfbox.contentstream.operator.color;
  *
  * @author John Hewson
  */
-public class SetStrokingColorN extends SetStrokingColor
-{
-    @Override
-    public String getName()
-    {
-        return "SCN";
-    }
+public class SetStrokingColorN extends SetStrokingColor {
+  @Override
+  public String getName() {
+    return "SCN";
+  }
 }

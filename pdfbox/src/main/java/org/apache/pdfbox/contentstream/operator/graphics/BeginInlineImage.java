@@ -29,24 +29,18 @@ import org.apache.pdfbox.contentstream.operator.Operator;
  *
  * @author Ben Litchfield
  */
-public final class BeginInlineImage extends GraphicsOperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> operands) throws IOException
-    {
-        if (operator.getImageData() == null || operator.getImageData().length == 0)
-        {
-            return;
-        }
-        PDImage image = new PDInlineImage(operator.getImageParameters(),
-                                          operator.getImageData(),
-                                          context.getResources());
-        context.drawImage(image);
+public final class BeginInlineImage extends GraphicsOperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> operands) throws IOException {
+    if (operator.getImageData() == null || operator.getImageData().length == 0) {
+      return;
     }
+    PDImage image = new PDInlineImage(operator.getImageParameters(), operator.getImageData(), context.getResources());
+    context.drawImage(image);
+  }
 
-    @Override
-    public String getName()
-    {
-        return "BI";
-    }
+  @Override
+  public String getName() {
+    return "BI";
+  }
 }

@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.contentstream.operator.Operator;
+
 import java.io.IOException;
 
 /**
@@ -27,18 +28,15 @@ import java.io.IOException;
  *
  * @author Ben Litchfield
  */
-public final class CloseFillNonZeroAndStrokePath extends GraphicsOperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> operands) throws IOException
-    {
-        context.processOperator("h", operands);  // ClosePath
-        context.processOperator("B", operands);  // FillNonZeroAndStroke
-    }
+public final class CloseFillNonZeroAndStrokePath extends GraphicsOperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> operands) throws IOException {
+    context.processOperator("h", operands);  // ClosePath
+    context.processOperator("B", operands);  // FillNonZeroAndStroke
+  }
 
-    @Override
-    public String getName()
-    {
-        return "b";
-    }
+  @Override
+  public String getName() {
+    return "b";
+  }
 }

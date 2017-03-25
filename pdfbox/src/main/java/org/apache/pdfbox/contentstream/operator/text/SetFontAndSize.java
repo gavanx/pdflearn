@@ -27,6 +27,7 @@ import org.apache.pdfbox.contentstream.operator.Operator;
 import org.apache.pdfbox.contentstream.operator.OperatorProcessor;
 
 import java.io.IOException;
+
 import org.apache.pdfbox.pdmodel.font.PDFont;
 
 /**
@@ -34,36 +35,30 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
  *
  * @author Laurent Huault
  */
-public class SetFontAndSize extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        if (arguments.size() < 2)
-        {
-            throw new MissingOperandException(operator, arguments);
-        }
-
-        COSBase base0 = arguments.get(0);
-        COSBase base1 = arguments.get(1);
-        if (!(base0 instanceof COSName))
-        {
-            return;
-        }
-        if (!(base1 instanceof COSNumber))
-        {
-            return;
-        }
-        COSName fontName = (COSName) base0;
-        float fontSize = ((COSNumber) base1).floatValue();
-        context.getGraphicsState().getTextState().setFontSize(fontSize);
-        PDFont font = context.getResources().getFont(fontName);
-        context.getGraphicsState().getTextState().setFont(font);
+public class SetFontAndSize extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    if (arguments.size() < 2) {
+      throw new MissingOperandException(operator, arguments);
     }
 
-    @Override
-    public String getName()
-    {
-        return "Tf";
+    COSBase base0 = arguments.get(0);
+    COSBase base1 = arguments.get(1);
+    if (!(base0 instanceof COSName)) {
+      return;
     }
+    if (!(base1 instanceof COSNumber)) {
+      return;
+    }
+    COSName fontName = (COSName) base0;
+    float fontSize = ((COSNumber) base1).floatValue();
+    context.getGraphicsState().getTextState().setFontSize(fontSize);
+    PDFont font = context.getResources().getFont(fontName);
+    context.getGraphicsState().getTextState().setFont(font);
+  }
+
+  @Override
+  public String getName() {
+    return "Tf";
+  }
 }

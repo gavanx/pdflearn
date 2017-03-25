@@ -28,19 +28,16 @@ import org.apache.pdfbox.contentstream.operator.OperatorProcessor;
  *
  * @author Laurent Huault
  */
-public class EndText extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        context.setTextMatrix(null);
-        context.setTextLineMatrix(null);
-        context.endText();
-    }
+public class EndText extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    context.setTextMatrix(null);
+    context.setTextLineMatrix(null);
+    context.endText();
+  }
 
-    @Override
-    public String getName()
-    {
-        return "ET";
-    }
+  @Override
+  public String getName() {
+    return "ET";
+  }
 }

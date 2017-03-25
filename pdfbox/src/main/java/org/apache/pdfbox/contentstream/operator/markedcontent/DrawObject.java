@@ -25,6 +25,7 @@ import org.apache.pdfbox.text.PDFMarkedContentExtractor;
 
 import java.io.IOException;
 import java.util.List;
+
 import org.apache.pdfbox.contentstream.operator.MissingOperandException;
 import org.apache.pdfbox.contentstream.operator.Operator;
 import org.apache.pdfbox.contentstream.operator.OperatorProcessor;
@@ -35,38 +36,30 @@ import org.apache.pdfbox.contentstream.operator.OperatorProcessor;
  * @author Ben Litchfield
  * @author Mario Ivankovits
  */
-public class DrawObject extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        if (arguments.size() < 1)
-        {
-            throw new MissingOperandException(operator, arguments);
-        }
-        COSBase base0 = arguments.get(0);
-        if (!(base0 instanceof COSName))
-        {
-            return;
-        }
-        COSName name = (COSName) base0;
-        PDXObject xobject =  context.getResources().getXObject(name);
-        ((PDFMarkedContentExtractor) context).xobject(xobject);
-
-        if (xobject instanceof PDTransparencyGroup)
-        {
-            context.showTransparencyGroup((PDTransparencyGroup) xobject);
-        }
-        else if (xobject instanceof PDFormXObject)
-        {
-            PDFormXObject form = (PDFormXObject) xobject;
-            context.showForm(form);
-        }
+public class DrawObject extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    if (arguments.size() < 1) {
+      throw new MissingOperandException(operator, arguments);
     }
-
-    @Override
-    public String getName()
-    {
-        return "Do";
+    COSBase base0 = arguments.get(0);
+    if (!(base0 instanceof COSName)) {
+      return;
     }
+    COSName name = (COSName) base0;
+    PDXObject xobject = context.getResources().getXObject(name);
+    ((PDFMarkedContentExtractor) context).xobject(xobject);
+
+    if (xobject instanceof PDTransparencyGroup) {
+      context.showTransparencyGroup((PDTransparencyGroup) xobject);
+    } else if (xobject instanceof PDFormXObject) {
+      PDFormXObject form = (PDFormXObject) xobject;
+      context.showForm(form);
+    }
+  }
+
+  @Override
+  public String getName() {
+    return "Do";
+  }
 }

@@ -29,26 +29,23 @@ import java.util.List;
  *
  * @author John Hewson
  */
-public class SetStrokingDeviceRGBColor extends SetStrokingColor
-{
-    /**
-     * RG Set the stroking colour space to DeviceRGB and set the colour to
-     * use for stroking operations.
-     *
-     * @param operator The operator that is being executed.
-     * @param arguments List
-     * @throws IOException If the color space cannot be read.
-     */
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        PDColorSpace cs = context.getResources().getColorSpace(COSName.DEVICERGB);
-        context.getGraphicsState().setStrokingColorSpace(cs);
-        super.process(operator, arguments);
-    }
+public class SetStrokingDeviceRGBColor extends SetStrokingColor {
+  /**
+   * RG Set the stroking colour space to DeviceRGB and set the colour to
+   * use for stroking operations.
+   *
+   * @param operator  The operator that is being executed.
+   * @param arguments List
+   * @throws IOException If the color space cannot be read.
+   */
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    PDColorSpace cs = context.getResources().getColorSpace(COSName.DEVICERGB);
+    context.getGraphicsState().setStrokingColorSpace(cs);
+    super.process(operator, arguments);
+  }
 
-    @Override
-    public String getName()
-    {
-        return "RG";
-    }
+  @Override
+  public String getName() {
+    return "RG";
+  }
 }

@@ -30,18 +30,15 @@ import java.util.List;
  *
  * @author John Hewson
  */
-public class SetStrokingDeviceGrayColor extends SetStrokingColor
-{
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        PDColorSpace cs = context.getResources().getColorSpace(COSName.DEVICEGRAY);
-        context.getGraphicsState().setStrokingColorSpace(cs);
-        super.process(operator, arguments);
-    }
+public class SetStrokingDeviceGrayColor extends SetStrokingColor {
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    PDColorSpace cs = context.getResources().getColorSpace(COSName.DEVICEGRAY);
+    context.getGraphicsState().setStrokingColorSpace(cs);
+    super.process(operator, arguments);
+  }
 
-    @Override
-    public String getName()
-    {
-        return "G";
-    }
+  @Override
+  public String getName() {
+    return "G";
+  }
 }

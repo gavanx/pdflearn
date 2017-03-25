@@ -30,19 +30,16 @@ import java.util.List;
  *
  * @author John Hewson
  */
-public class SetNonStrokingDeviceGrayColor extends SetNonStrokingColor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        PDColorSpace cs = context.getResources().getColorSpace(COSName.DEVICEGRAY);
-        context.getGraphicsState().setNonStrokingColorSpace(cs);
-        super.process(operator, arguments);
-    }
+public class SetNonStrokingDeviceGrayColor extends SetNonStrokingColor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    PDColorSpace cs = context.getResources().getColorSpace(COSName.DEVICEGRAY);
+    context.getGraphicsState().setNonStrokingColorSpace(cs);
+    super.process(operator, arguments);
+  }
 
-    @Override
-    public String getName()
-    {
-        return "g";
-    }
+  @Override
+  public String getName() {
+    return "g";
+  }
 }

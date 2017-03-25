@@ -27,24 +27,19 @@ import org.apache.pdfbox.cos.COSNumber;
 
 /**
  * J: Set the line cap style.
- *
  */
-public class SetLineCapStyle extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        if (arguments.size() < 1)
-        {
-            throw new MissingOperandException(operator, arguments);
-        }
-        int lineCapStyle = ((COSNumber)arguments.get( 0 )).intValue();
-        context.getGraphicsState().setLineCap( lineCapStyle );
+public class SetLineCapStyle extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    if (arguments.size() < 1) {
+      throw new MissingOperandException(operator, arguments);
     }
+    int lineCapStyle = ((COSNumber) arguments.get(0)).intValue();
+    context.getGraphicsState().setLineCap(lineCapStyle);
+  }
 
-    @Override
-    public String getName()
-    {
-        return "J";
-    }
+  @Override
+  public String getName() {
+    return "J";
+  }
 }

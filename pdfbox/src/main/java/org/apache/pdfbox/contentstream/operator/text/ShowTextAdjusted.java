@@ -20,7 +20,9 @@ import java.util.List;
 
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
+
 import java.io.IOException;
+
 import org.apache.pdfbox.contentstream.operator.Operator;
 import org.apache.pdfbox.contentstream.operator.OperatorProcessor;
 
@@ -29,32 +31,26 @@ import org.apache.pdfbox.contentstream.operator.OperatorProcessor;
  *
  * @author Laurent Huault
  */
-public class ShowTextAdjusted extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        if (arguments.size() < 1)
-        {
-            return;
-        }
-        COSBase base = arguments.get(0);
-        if (!(base instanceof COSArray))
-        {
-            return;
-        }
-        if (context.getTextMatrix() == null)
-        {
-            // ignore: outside of BT...ET
-            return;
-        }
-        COSArray array = (COSArray) base;
-        context.showTextStrings(array);
+public class ShowTextAdjusted extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    if (arguments.size() < 1) {
+      return;
     }
+    COSBase base = arguments.get(0);
+    if (!(base instanceof COSArray)) {
+      return;
+    }
+    if (context.getTextMatrix() == null) {
+      // ignore: outside of BT...ET
+      return;
+    }
+    COSArray array = (COSArray) base;
+    context.showTextStrings(array);
+  }
 
-    @Override
-    public String getName()
-    {
-        return "TJ";
-    }
+  @Override
+  public String getName() {
+    return "TJ";
+  }
 }

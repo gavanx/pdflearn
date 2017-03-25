@@ -30,23 +30,19 @@ import org.apache.pdfbox.cos.COSNumber;
  *
  * @author Ben Litchfield
  */
-public class SetTextHorizontalScaling extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        if (arguments.size() < 1)
-        {
-            throw new MissingOperandException(operator, arguments);
-        }
-        
-        COSNumber scaling = (COSNumber)arguments.get(0);
-        context.getGraphicsState().getTextState().setHorizontalScaling(scaling.floatValue());
+public class SetTextHorizontalScaling extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    if (arguments.size() < 1) {
+      throw new MissingOperandException(operator, arguments);
     }
 
-    @Override
-    public String getName()
-    {
-        return "Tz";
-    }
+    COSNumber scaling = (COSNumber) arguments.get(0);
+    context.getGraphicsState().getTextState().setHorizontalScaling(scaling.floatValue());
+  }
+
+  @Override
+  public String getName() {
+    return "Tz";
+  }
 }

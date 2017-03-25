@@ -29,24 +29,20 @@ import org.apache.pdfbox.contentstream.operator.Operator;
  *
  * @author Ben Litchfield
  */
-public final class ClosePath extends GraphicsOperatorProcessor
-{
-    private static final Log LOG = LogFactory.getLog(ClosePath.class);
-    
-    @Override
-    public void process(Operator operator, List<COSBase> operands) throws IOException
-    {
-        if (context.getCurrentPoint() == null)
-        {
-            LOG.warn("ClosePath without initial MoveTo");
-            return;
-        }
-        context.closePath();
-    }
+public final class ClosePath extends GraphicsOperatorProcessor {
+  private static final Log LOG = LogFactory.getLog(ClosePath.class);
 
-    @Override
-    public String getName()
-    {
-        return "h";
+  @Override
+  public void process(Operator operator, List<COSBase> operands) throws IOException {
+    if (context.getCurrentPoint() == null) {
+      LOG.warn("ClosePath without initial MoveTo");
+      return;
     }
+    context.closePath();
+  }
+
+  @Override
+  public String getName() {
+    return "h";
+  }
 }

@@ -26,19 +26,15 @@ import java.io.IOException;
 
 /**
  * B* Fill and then stroke the path, using the even-odd rule to determine the region to fill.
- *
  */
-public final class FillEvenOddAndStrokePath extends GraphicsOperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> operands) throws IOException
-    {
-        context.fillAndStrokePath(GeneralPath.WIND_EVEN_ODD);
-    }
+public final class FillEvenOddAndStrokePath extends GraphicsOperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> operands) throws IOException {
+    context.fillAndStrokePath(GeneralPath.WIND_EVEN_ODD);
+  }
 
-    @Override
-    public String getName()
-    {
-        return "B*";
-    }
+  @Override
+  public String getName() {
+    return "B*";
+  }
 }

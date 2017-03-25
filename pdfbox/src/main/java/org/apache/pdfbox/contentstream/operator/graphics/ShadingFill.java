@@ -29,21 +29,17 @@ import org.apache.pdfbox.contentstream.operator.Operator;
  *
  * @author Daniel Wilson
  */
-public final class ShadingFill extends GraphicsOperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> operands) throws IOException
-    {
-        if (operands.size() < 1)
-        {
-            throw new MissingOperandException(operator, operands);
-        }
-        context.shadingFill((COSName) operands.get(0));
+public final class ShadingFill extends GraphicsOperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> operands) throws IOException {
+    if (operands.size() < 1) {
+      throw new MissingOperandException(operator, operands);
     }
+    context.shadingFill((COSName) operands.get(0));
+  }
 
-    @Override
-    public String getName()
-    {
-        return "sh";
-    }
+  @Override
+  public String getName() {
+    return "sh";
+  }
 }

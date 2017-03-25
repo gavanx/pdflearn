@@ -32,47 +32,38 @@ import org.apache.pdfbox.contentstream.operator.Operator;
  *
  * @author Ben Litchfield
  */
-public class LineTo extends GraphicsOperatorProcessor
-{
-    private static final Log LOG = LogFactory.getLog(LineTo.class);
-    
-    @Override
-    public void process(Operator operator, List<COSBase> operands) throws IOException
-    {
-        if (operands.size() < 2)
-        {
-            throw new MissingOperandException(operator, operands);
-        }
-        COSBase base0 = operands.get(0);
-        if (!(base0 instanceof COSNumber))
-        {
-            return;
-        }
-        COSBase base1 = operands.get(1);
-        if (!(base1 instanceof COSNumber))
-        {
-            return;
-        }
-        // append straight line segment from the current point to the point
-        COSNumber x = (COSNumber) base0;
-        COSNumber y = (COSNumber) base1;
+public class LineTo extends GraphicsOperatorProcessor {
+  private static final Log LOG = LogFactory.getLog(LineTo.class);
 
-        Point2D.Float pos = context.transformedPoint(x.floatValue(), y.floatValue());
-
-        if (context.getCurrentPoint() == null)
-        {
-            LOG.warn("LineTo (" + pos.x + "," + pos.y + ") without initial MoveTo");
-            context.moveTo(pos.x, pos.y);
-        }
-        else
-        {
-            context.lineTo(pos.x, pos.y);
-        }
+  @Override
+  public void process(Operator operator, List<COSBase> operands) throws IOException {
+    if (operands.size() < 2) {
+      throw new MissingOperandException(operator, operands);
     }
-
-    @Override
-    public String getName()
-    {
-        return "l";
+    COSBase base0 = operands.get(0);
+    if (!(base0 instanceof COSNumber)) {
+      return;
     }
+    COSBase base1 = operands.get(1);
+    if (!(base1 instanceof COSNumber)) {
+      return;
+    }
+    // append straight line segment from the current point to the point
+    COSNumber x = (COSNumber) base0;
+    COSNumber y = (COSNumber) base1;
+
+    Point2D.Float pos = context.transformedPoint(x.floatValue(), y.floatValue());
+
+    if (context.getCurrentPoint() == null) {
+      LOG.warn("LineTo (" + pos.x + "," + pos.y + ") without initial MoveTo");
+      context.moveTo(pos.x, pos.y);
+    } else {
+      context.lineTo(pos.x, pos.y);
+    }
+  }
+
+  @Override
+  public String getName() {
+    return "l";
+  }
 }

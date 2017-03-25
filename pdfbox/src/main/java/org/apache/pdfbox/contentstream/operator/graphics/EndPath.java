@@ -27,17 +27,14 @@ import org.apache.pdfbox.contentstream.operator.Operator;
  *
  * @author Ben Litchfield
  */
-public final class EndPath extends GraphicsOperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> operands) throws IOException
-    {
-        context.endPath();
-    }
+public final class EndPath extends GraphicsOperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> operands) throws IOException {
+    context.endPath();
+  }
 
-    @Override
-    public String getName()
-    {
-        return "n";
-    }
+  @Override
+  public String getName() {
+    return "n";
+  }
 }

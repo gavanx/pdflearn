@@ -30,28 +30,22 @@ import org.apache.pdfbox.contentstream.operator.OperatorProcessor;
  *
  * @author Johannes Koch
  */
-public class BeginMarkedContentSequence extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        COSName tag = null;
-        for (COSBase argument : arguments)
-        {
-            if (argument instanceof COSName)
-            {
-                tag = (COSName) argument;
-            }
-        }
-        if (this.context instanceof PDFMarkedContentExtractor)
-        {
-            ((PDFMarkedContentExtractor) this.context).beginMarkedContentSequence(tag, null);
-        }
+public class BeginMarkedContentSequence extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    COSName tag = null;
+    for (COSBase argument : arguments) {
+      if (argument instanceof COSName) {
+        tag = (COSName) argument;
+      }
     }
+    if (this.context instanceof PDFMarkedContentExtractor) {
+      ((PDFMarkedContentExtractor) this.context).beginMarkedContentSequence(tag, null);
+    }
+  }
 
-    @Override
-    public String getName()
-    {
-        return "BMC";
-    }
+  @Override
+  public String getName() {
+    return "BMC";
+  }
 }

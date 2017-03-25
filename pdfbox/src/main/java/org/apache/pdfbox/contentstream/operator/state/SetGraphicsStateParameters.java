@@ -31,34 +31,28 @@ import org.apache.pdfbox.contentstream.operator.MissingOperandException;
  *
  * @author Ben Litchfield
  */
-public class SetGraphicsStateParameters extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        if (arguments.size() < 1)
-        {
-            throw new MissingOperandException(operator, arguments);
-        }
-        COSBase base0 = arguments.get(0);
-        if (!(base0 instanceof COSName))
-        {
-            return;
-        }
-        
-        // set parameters from graphics state parameter dictionary
-        COSName graphicsName = (COSName) base0;
-        PDExtendedGraphicsState gs = context.getResources().getExtGState(graphicsName);
-        if (gs == null)
-        {
-            throw new IOException("name for 'gs' operator not found in resources: /" + graphicsName.getName());
-        }
-        gs.copyIntoGraphicsState( context.getGraphicsState() );
+public class SetGraphicsStateParameters extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    if (arguments.size() < 1) {
+      throw new MissingOperandException(operator, arguments);
+    }
+    COSBase base0 = arguments.get(0);
+    if (!(base0 instanceof COSName)) {
+      return;
     }
 
-    @Override
-    public String getName()
-    {
-        return "gs";
+    // set parameters from graphics state parameter dictionary
+    COSName graphicsName = (COSName) base0;
+    PDExtendedGraphicsState gs = context.getResources().getExtGState(graphicsName);
+    if (gs == null) {
+      throw new IOException("name for 'gs' operator not found in resources: /" + graphicsName.getName());
     }
+    gs.copyIntoGraphicsState(context.getGraphicsState());
+  }
+
+  @Override
+  public String getName() {
+    return "gs";
+  }
 }

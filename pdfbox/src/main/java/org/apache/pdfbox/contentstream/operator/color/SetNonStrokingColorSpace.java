@@ -31,21 +31,17 @@ import org.apache.pdfbox.contentstream.operator.OperatorProcessor;
  * @author Ben Litchfield
  * @author John Hewson
  */
-public class SetNonStrokingColorSpace extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        COSName name = (COSName)arguments.get(0);
+public class SetNonStrokingColorSpace extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    COSName name = (COSName) arguments.get(0);
+    PDColorSpace cs = context.getResources().getColorSpace(name);
+    context.getGraphicsState().setNonStrokingColorSpace(cs);
+    context.getGraphicsState().setNonStrokingColor(cs.getInitialColor());
+  }
 
-        PDColorSpace cs = context.getResources().getColorSpace(name);
-        context.getGraphicsState().setNonStrokingColorSpace(cs);
-        context.getGraphicsState().setNonStrokingColor(cs.getInitialColor());
-    }
-
-    @Override
-    public String getName()
-    {
-        return "cs";
-    }
+  @Override
+  public String getName() {
+    return "cs";
+  }
 }

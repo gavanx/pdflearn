@@ -30,34 +30,28 @@ import java.io.IOException;
  *
  * @author Laurent Huault
  */
-public class ShowText extends OperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> arguments) throws IOException
-    {
-        if (arguments.size() < 1)
-        {
-            // ignore ( )Tj
-            return;
-        }
-        COSBase base = arguments.get(0);
-        if (!(base instanceof COSString))
-        {
-            // ignore
-            return;
-        }
-        if (context.getTextMatrix() == null)
-        {
-            // ignore: outside of BT...ET
-            return;
-        }
-        COSString string = (COSString) base;
-        context.showTextString(string.getBytes());
+public class ShowText extends OperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> arguments) throws IOException {
+    if (arguments.size() < 1) {
+      // ignore ( )Tj
+      return;
     }
+    COSBase base = arguments.get(0);
+    if (!(base instanceof COSString)) {
+      // ignore
+      return;
+    }
+    if (context.getTextMatrix() == null) {
+      // ignore: outside of BT...ET
+      return;
+    }
+    COSString string = (COSString) base;
+    context.showTextString(string.getBytes());
+  }
 
-    @Override
-    public String getName()
-    {
-        return "Tj";
-    }
+  @Override
+  public String getName() {
+    return "Tj";
+  }
 }

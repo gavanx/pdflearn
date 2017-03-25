@@ -18,6 +18,7 @@ package org.apache.pdfbox.contentstream.operator.graphics;
 
 import java.io.IOException;
 import java.util.List;
+
 import org.apache.pdfbox.contentstream.operator.MissingOperandException;
 
 import org.apache.pdfbox.cos.COSBase;
@@ -35,45 +36,33 @@ import org.apache.pdfbox.contentstream.operator.Operator;
  * @author Ben Litchfield
  * @author John Hewson
  */
-public final class DrawObject extends GraphicsOperatorProcessor
-{
-    @Override
-    public void process(Operator operator, List<COSBase> operands) throws IOException
-    {
-        if (operands.size() < 1)
-        {
-            throw new MissingOperandException(operator, operands);
-        }
-        COSBase base0 = operands.get(0);
-        if (!(base0 instanceof COSName))
-        {
-            return;
-        }
-        COSName objectName = (COSName) base0;
-        PDXObject xobject = context.getResources().getXObject(objectName);
-
-        if (xobject == null)
-        {
-            throw new MissingResourceException("Missing XObject: " + objectName.getName());
-        }
-        else if (xobject instanceof PDImageXObject)
-        {
-            PDImageXObject image = (PDImageXObject)xobject;
-            context.drawImage(image);
-        }
-        else if (xobject instanceof PDTransparencyGroup)
-        {
-            getContext().showTransparencyGroup((PDTransparencyGroup) xobject);
-        }
-        else if (xobject instanceof PDFormXObject)
-        {
-            getContext().showForm((PDFormXObject) xobject);
-        }
+public final class DrawObject extends GraphicsOperatorProcessor {
+  @Override
+  public void process(Operator operator, List<COSBase> operands) throws IOException {
+    if (operands.size() < 1) {
+      throw new MissingOperandException(operator, operands);
     }
-
-    @Override
-    public String getName()
-    {
-        return "Do";
+    COSBase base0 = operands.get(0);
+    if (!(base0 instanceof COSName)) {
+      return;
     }
+    COSName objectName = (COSName) base0;
+    PDXObject xobject = context.getResources().getXObject(objectName);
+
+    if (xobject == null) {
+      throw new MissingResourceException("Missing XObject: " + objectName.getName());
+    } else if (xobject instanceof PDImageXObject) {
+      PDImageXObject image = (PDImageXObject) xobject;
+      context.drawImage(image);
+    } else if (xobject instanceof PDTransparencyGroup) {
+      getContext().showTransparencyGroup((PDTransparencyGroup) xobject);
+    } else if (xobject instanceof PDFormXObject) {
+      getContext().showForm((PDFormXObject) xobject);
+    }
+  }
+
+  @Override
+  public String getName() {
+    return "Do";
+  }
 }
