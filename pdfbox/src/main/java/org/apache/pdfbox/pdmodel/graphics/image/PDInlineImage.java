@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
@@ -42,339 +43,278 @@ import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceGray;
  * @author Ben Litchfield
  * @author John Hewson
  */
-public final class PDInlineImage implements PDImage
-{
-    // image parameters
-    private final COSDictionary parameters;
+public final class PDInlineImage implements PDImage {
+  // image parameters
+  private final COSDictionary parameters;
+  // the current resources, contains named color spaces
+  private final PDResources resources;
+  // image data
+  private final byte[] rawData;
+  private final byte[] decodedData;
 
-    // the current resources, contains named color spaces
-    private final PDResources resources;
+  /**
+   * Creates an inline image from the given parameters and data.
+   *
+   * @param parameters the image parameters
+   * @param data       the image data
+   * @param resources  the current resources
+   * @throws IOException if the stream cannot be decoded
+   */
+  public PDInlineImage(COSDictionary parameters, byte[] data, PDResources resources) throws IOException {
+    this.parameters = parameters;
+    this.resources = resources;
+    this.rawData = data;
 
-    // image data
-    private final byte[] rawData;
-    private final byte[] decodedData;
-
-    /**
-     * Creates an inline image from the given parameters and data.
-     *
-     * @param parameters the image parameters
-     * @param data the image data
-     * @param resources the current resources
-     * @throws IOException if the stream cannot be decoded
-     */
-    public PDInlineImage(COSDictionary parameters, byte[] data, PDResources resources)
-            throws IOException
-    {
-        this.parameters = parameters;
-        this.resources = resources;
-        this.rawData = data;
-
-        DecodeResult decodeResult = null;
-        List<String> filters = getFilters();
-        if (filters == null || filters.isEmpty())
-        {
-            this.decodedData = data;
-        }
-        else
-        {
-            ByteArrayInputStream in = new ByteArrayInputStream(data);
-            ByteArrayOutputStream out = new ByteArrayOutputStream(data.length);
-            for (int i = 0; i < filters.size(); i++)
-            {
-                // TODO handling of abbreviated names belongs here, rather than in other classes
-                out.reset();
-                Filter filter = FilterFactory.INSTANCE.getFilter(filters.get(i));
-                decodeResult = filter.decode(in, out, parameters, i);
-                in = new ByteArrayInputStream(out.toByteArray());
-            }
-            this.decodedData = out.toByteArray();
-        }
-
-        // repair parameters
-        if (decodeResult != null)
-        {
-            parameters.addAll(decodeResult.getParameters());
-        }
+    DecodeResult decodeResult = null;
+    List<String> filters = getFilters();
+    if (filters == null || filters.isEmpty()) {
+      this.decodedData = data;
+    } else {
+      ByteArrayInputStream in = new ByteArrayInputStream(data);
+      ByteArrayOutputStream out = new ByteArrayOutputStream(data.length);
+      for (int i = 0; i < filters.size(); i++) {
+        // TODO handling of abbreviated names belongs here, rather than in other classes
+        out.reset();
+        Filter filter = FilterFactory.INSTANCE.getFilter(filters.get(i));
+        decodeResult = filter.decode(in, out, parameters, i);
+        in = new ByteArrayInputStream(out.toByteArray());
+      }
+      this.decodedData = out.toByteArray();
     }
 
-    @Override
-    public COSBase getCOSObject()
-    {
-        return parameters;
+    // repair parameters
+    if (decodeResult != null) {
+      parameters.addAll(decodeResult.getParameters());
+    }
+  }
+
+  @Override
+  public COSBase getCOSObject() {
+    return parameters;
+  }
+
+  @Override
+  public int getBitsPerComponent() {
+    if (isStencil()) {
+      return 1;
+    } else {
+      return parameters.getInt(COSName.BPC, COSName.BITS_PER_COMPONENT, -1);
+    }
+  }
+
+  @Override
+  public void setBitsPerComponent(int bitsPerComponent) {
+    parameters.setInt(COSName.BPC, bitsPerComponent);
+  }
+
+  @Override
+  public PDColorSpace getColorSpace() throws IOException {
+    COSBase cs = parameters.getDictionaryObject(COSName.CS, COSName.COLORSPACE);
+    if (cs != null) {
+      return createColorSpace(cs);
+    } else if (isStencil()) {
+      // stencil mask color space must be gray, it is often missing
+      return PDDeviceGray.INSTANCE;
+    } else {
+      // an image without a color space is always broken
+      throw new IOException("could not determine inline image color space");
+    }
+  }
+
+  // deliver the long name of a device colorspace, or the parameter
+  private COSBase toLongName(COSBase cs) {
+    if (COSName.RGB.equals(cs)) {
+      return COSName.DEVICERGB;
+    }
+    if (COSName.CMYK.equals(cs)) {
+      return COSName.DEVICECMYK;
+    }
+    if (COSName.G.equals(cs)) {
+      return COSName.DEVICEGRAY;
+    }
+    return cs;
+  }
+
+  private PDColorSpace createColorSpace(COSBase cs) throws IOException {
+    if (cs instanceof COSName) {
+      return PDColorSpace.create(toLongName(cs), resources);
     }
 
-    @Override
-    public int getBitsPerComponent()
-    {
-        if (isStencil())
-        {
-            return 1;
-        }
-        else
-        {
-            return parameters.getInt(COSName.BPC, COSName.BITS_PER_COMPONENT, -1);
-        }
+    if (cs instanceof COSArray && ((COSArray) cs).size() > 1) {
+      COSArray srcArray = (COSArray) cs;
+      COSBase csType = srcArray.get(0);
+      if (COSName.I.equals(csType) || COSName.INDEXED.equals(csType)) {
+        COSArray dstArray = new COSArray();
+        dstArray.addAll(srcArray);
+        dstArray.set(0, COSName.INDEXED);
+        dstArray.set(1, toLongName(srcArray.get(1)));
+        return PDColorSpace.create(dstArray, resources);
+      }
+
+      throw new IOException("Illegal type of inline image color space: " + csType);
     }
 
-    @Override
-    public void setBitsPerComponent(int bitsPerComponent)
-    {
-        parameters.setInt(COSName.BPC, bitsPerComponent);
-    }
+    throw new IOException("Illegal type of object for inline image color space: " + cs);
+  }
 
-    @Override
-    public PDColorSpace getColorSpace() throws IOException
-    {
-        COSBase cs = parameters.getDictionaryObject(COSName.CS, COSName.COLORSPACE);
-        if (cs != null)
-        {
-            return createColorSpace(cs);
-        }
-        else if (isStencil())
-        {
-            // stencil mask color space must be gray, it is often missing
-            return PDDeviceGray.INSTANCE;
-        }
-        else
-        {
-            // an image without a color space is always broken
-            throw new IOException("could not determine inline image color space");
-        }
+  @Override
+  public void setColorSpace(PDColorSpace colorSpace) {
+    COSBase base = null;
+    if (colorSpace != null) {
+      base = colorSpace.getCOSObject();
     }
-    
-    // deliver the long name of a device colorspace, or the parameter
-    private COSBase toLongName(COSBase cs)
-    {
-        if (COSName.RGB.equals(cs))
-        {
-            return COSName.DEVICERGB;
-        }
-        if (COSName.CMYK.equals(cs))
-        {
-            return COSName.DEVICECMYK;
-        }
-        if (COSName.G.equals(cs))
-        {
-            return COSName.DEVICEGRAY;
-        }
-        return cs;
-    }
-    
-    private PDColorSpace createColorSpace(COSBase cs) throws IOException
-    {
-        if (cs instanceof COSName)
-        {
-            return PDColorSpace.create(toLongName(cs), resources);
-        }
+    parameters.setItem(COSName.CS, base);
+  }
 
-        if (cs instanceof COSArray && ((COSArray) cs).size() > 1)
-        {
-            COSArray srcArray = (COSArray) cs;
-            COSBase csType = srcArray.get(0);
-            if (COSName.I.equals(csType) || COSName.INDEXED.equals(csType))
-            {
-                COSArray dstArray = new COSArray();
-                dstArray.addAll(srcArray);
-                dstArray.set(0, COSName.INDEXED);
-                dstArray.set(1, toLongName(srcArray.get(1)));
-                return PDColorSpace.create(dstArray, resources);
-            }
+  @Override
+  public int getHeight() {
+    return parameters.getInt(COSName.H, COSName.HEIGHT, -1);
+  }
 
-            throw new IOException("Illegal type of inline image color space: " + csType);
-        }
+  @Override
+  public void setHeight(int height) {
+    parameters.setInt(COSName.H, height);
+  }
 
-        throw new IOException("Illegal type of object for inline image color space: " + cs);
-    }
+  @Override
+  public int getWidth() {
+    return parameters.getInt(COSName.W, COSName.WIDTH, -1);
+  }
 
-    @Override
-    public void setColorSpace(PDColorSpace colorSpace)
-    {
-        COSBase base = null;
-        if (colorSpace != null)
-        {
-            base = colorSpace.getCOSObject();
-        }
-        parameters.setItem(COSName.CS, base);
-    }
+  @Override
+  public void setWidth(int width) {
+    parameters.setInt(COSName.W, width);
+  }
 
-    @Override
-    public int getHeight()
-    {
-        return parameters.getInt(COSName.H, COSName.HEIGHT, -1);
-    }
+  @Override
+  public boolean getInterpolate() {
+    return parameters.getBoolean(COSName.I, COSName.INTERPOLATE, false);
+  }
 
-    @Override
-    public void setHeight(int height)
-    {
-        parameters.setInt(COSName.H, height);
-    }
+  @Override
+  public void setInterpolate(boolean value) {
+    parameters.setBoolean(COSName.I, value);
+  }
 
-    @Override
-    public int getWidth()
-    {
-        return parameters.getInt(COSName.W, COSName.WIDTH, -1);
+  /**
+   * Returns a list of filters applied to this stream, or null if there are none.
+   *
+   * @return a list of filters applied to this stream
+   */
+  // TODO return an empty list if there are none?
+  public List<String> getFilters() {
+    List<String> names = null;
+    COSBase filters = parameters.getDictionaryObject(COSName.F, COSName.FILTER);
+    if (filters instanceof COSName) {
+      COSName name = (COSName) filters;
+      names = new COSArrayList<String>(name.getName(), name, parameters, COSName.FILTER);
+    } else if (filters instanceof COSArray) {
+      names = COSArrayList.convertCOSNameCOSArrayToList((COSArray) filters);
     }
+    return names;
+  }
 
-    @Override
-    public void setWidth(int width)
-    {
-        parameters.setInt(COSName.W, width);
-    }
+  /**
+   * Sets which filters are applied to this stream.
+   *
+   * @param filters the filters to apply to this stream.
+   */
+  public void setFilters(List<String> filters) {
+    COSBase obj = COSArrayList.convertStringListToCOSNameCOSArray(filters);
+    parameters.setItem(COSName.F, obj);
+  }
 
-    @Override
-    public boolean getInterpolate()
-    {
-        return parameters.getBoolean(COSName.I, COSName.INTERPOLATE, false);
-    }
+  @Override
+  public void setDecode(COSArray decode) {
+    parameters.setItem(COSName.D, decode);
+  }
 
-    @Override
-    public void setInterpolate(boolean value)
-    {
-        parameters.setBoolean(COSName.I, value);
-    }
+  @Override
+  public COSArray getDecode() {
+    return (COSArray) parameters.getDictionaryObject(COSName.D, COSName.DECODE);
+  }
 
-    /**
-     * Returns a list of filters applied to this stream, or null if there are none.
-     *
-     * @return a list of filters applied to this stream
-     */
-    // TODO return an empty list if there are none?
-    public List<String> getFilters()
-    {
-        List<String> names = null;
-        COSBase filters = parameters.getDictionaryObject(COSName.F, COSName.FILTER);
-        if (filters instanceof COSName)
-        {
-            COSName name = (COSName) filters;
-            names = new COSArrayList<String>(name.getName(), name, parameters, COSName.FILTER);
-        }
-        else if (filters instanceof COSArray)
-        {
-            names = COSArrayList.convertCOSNameCOSArrayToList((COSArray) filters);
-        }
-        return names;
-    }
+  @Override
+  public boolean isStencil() {
+    return parameters.getBoolean(COSName.IM, COSName.IMAGE_MASK, false);
+  }
 
-    /**
-     * Sets which filters are applied to this stream.
-     *
-     * @param filters the filters to apply to this stream.
-     */
-    public void setFilters(List<String> filters)
-    {
-        COSBase obj = COSArrayList.convertStringListToCOSNameCOSArray(filters);
-        parameters.setItem(COSName.F, obj);
-    }
+  @Override
+  public void setStencil(boolean isStencil) {
+    parameters.setBoolean(COSName.IM, isStencil);
+  }
 
-    @Override
-    public void setDecode(COSArray decode)
-    {
-        parameters.setItem(COSName.D, decode);
-    }
+  @Override
+  public InputStream createInputStream() throws IOException {
+    return new ByteArrayInputStream(decodedData);
+  }
 
-    @Override
-    public COSArray getDecode()
-    {
-        return (COSArray) parameters.getDictionaryObject(COSName.D, COSName.DECODE);
+  @Override
+  public InputStream createInputStream(List<String> stopFilters) throws IOException {
+    List<String> filters = getFilters();
+    ByteArrayInputStream in = new ByteArrayInputStream(rawData);
+    ByteArrayOutputStream out = new ByteArrayOutputStream(rawData.length);
+    for (int i = 0; filters != null && i < filters.size(); i++) {
+      // TODO handling of abbreviated names belongs here, rather than in other classes
+      out.reset();
+      if (stopFilters.contains(filters.get(i))) {
+        break;
+      } else {
+        Filter filter = FilterFactory.INSTANCE.getFilter(filters.get(i));
+        filter.decode(in, out, parameters, i);
+        in = new ByteArrayInputStream(out.toByteArray());
+      }
     }
+    return new ByteArrayInputStream(out.toByteArray());
+  }
 
-    @Override
-    public boolean isStencil()
-    {
-        return parameters.getBoolean(COSName.IM, COSName.IMAGE_MASK, false);
-    }
+  @Override
+  public boolean isEmpty() {
+    return decodedData.length == 0;
+  }
 
-    @Override
-    public void setStencil(boolean isStencil)
-    {
-        parameters.setBoolean(COSName.IM, isStencil);
-    }
+  /**
+   * Returns the inline image data.
+   */
+  public byte[] getData() {
+    return decodedData;
+  }
 
-    @Override
-    public InputStream createInputStream() throws IOException
-    {
-        return new ByteArrayInputStream(decodedData);
-    }
+  @Override
+  public BufferedImage getImage() throws IOException {
+    return SampledImageReader.getRGBImage(this, getColorKeyMask());
+  }
 
-    @Override
-    public InputStream createInputStream(List<String> stopFilters) throws IOException
-    {
-        List<String> filters = getFilters();
-        ByteArrayInputStream in = new ByteArrayInputStream(rawData);
-        ByteArrayOutputStream out = new ByteArrayOutputStream(rawData.length);
-        for (int i = 0; filters != null && i < filters.size(); i++)
-        {
-            // TODO handling of abbreviated names belongs here, rather than in other classes
-            out.reset();
-            if (stopFilters.contains(filters.get(i)))
-            {
-                break;
-            }
-            else
-            {
-                Filter filter = FilterFactory.INSTANCE.getFilter(filters.get(i));
-                filter.decode(in, out, parameters, i);
-                in = new ByteArrayInputStream(out.toByteArray());
-            }
-        }
-        return new ByteArrayInputStream(out.toByteArray());
+  @Override
+  public BufferedImage getStencilImage(Paint paint) throws IOException {
+    if (!isStencil()) {
+      throw new IllegalStateException("Image is not a stencil");
     }
+    return SampledImageReader.getStencilImage(this, paint);
+  }
 
-    @Override
-    public boolean isEmpty()
-    {
-        return decodedData.length == 0;
+  /**
+   * Returns the color key mask array associated with this image, or null if
+   * there is none.
+   *
+   * @return Mask Image XObject
+   */
+  public COSArray getColorKeyMask() {
+    COSBase mask = parameters.getDictionaryObject(COSName.IM, COSName.MASK);
+    if (mask instanceof COSArray) {
+      return (COSArray) mask;
     }
+    return null;
+  }
 
-    /**
-     * Returns the inline image data.
-     */
-    public byte[] getData()
-    {
-        return decodedData;
-    }
-    
-    @Override
-    public BufferedImage getImage() throws IOException
-    {
-        return SampledImageReader.getRGBImage(this, getColorKeyMask());
-    }
-
-    @Override
-    public BufferedImage getStencilImage(Paint paint) throws IOException
-    {
-        if (!isStencil())
-        {
-            throw new IllegalStateException("Image is not a stencil");
-        }
-        return SampledImageReader.getStencilImage(this, paint);
-    }
-
-    /**
-     * Returns the color key mask array associated with this image, or null if
-     * there is none.
-     *
-     * @return Mask Image XObject
-     */
-    public COSArray getColorKeyMask()
-    {
-        COSBase mask = parameters.getDictionaryObject(COSName.IM, COSName.MASK);
-        if (mask instanceof COSArray)
-        {
-            return (COSArray) mask;
-        }
-        return null;
-    }
-
-    /**
-     * Returns the suffix for this image type, e.g. jpg/png.
-     *
-     * @return The image suffix.
-     */
-    @Override
-    public String getSuffix()
-    {
-        // TODO implement me
-        return null;
-    }
+  /**
+   * Returns the suffix for this image type, e.g. jpg/png.
+   *
+   * @return The image suffix.
+   */
+  @Override
+  public String getSuffix() {
+    // TODO implement me
+    return null;
+  }
 }

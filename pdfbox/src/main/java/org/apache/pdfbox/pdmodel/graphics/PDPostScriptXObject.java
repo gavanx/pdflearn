@@ -25,14 +25,13 @@ import org.apache.pdfbox.cos.COSStream;
  *
  * @author John Hewson
  */
-public class PDPostScriptXObject extends PDXObject
-{
-    /**
-     * Creates a PostScript XObject.
-     * @param stream The XObject stream
-     */
-    public PDPostScriptXObject(COSStream stream)
-    {
-        super(stream, COSName.PS);
-    }
+public class PDPostScriptXObject extends PDXObject {
+  /**
+   * Creates a PostScript XObject.
+   *
+   * @param stream The XObject stream
+   */
+  public PDPostScriptXObject(COSStream stream) {
+    super(stream, COSName.PS);
+  }
 }

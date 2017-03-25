@@ -25,30 +25,28 @@ import org.apache.fontbox.ttf.TrueTypeFont;
  *
  * @author John Hewson
  */
-public interface FontMapper
-{
-    /**
-     * Finds a TrueType font with the given PostScript name, or a suitable substitute, or null.
-     *
-     * @param fontDescriptor FontDescriptor
-     */
-    FontMapping<TrueTypeFont> getTrueTypeFont(String baseFont, PDFontDescriptor fontDescriptor);
-    
-    /**
-     * Finds a font with the given PostScript name, or a suitable substitute, or null. This allows
-     * any font to be substituted with a PFB, TTF or OTF.
-     *
-     * @param fontDescriptor the FontDescriptor of the font to find
-     */
-    FontMapping<FontBoxFont> getFontBoxFont(String baseFont, PDFontDescriptor fontDescriptor);
-    
-    /**
-     * Finds a CFF CID-Keyed font with the given PostScript name, or a suitable substitute, or null.
-     * This method can also map CJK fonts via their CIDSystemInfo (ROS).
-     * 
-     * @param fontDescriptor FontDescriptor
-     * @param cidSystemInfo the CID system info, e.g. "Adobe-Japan1", if any.
-     */
-    CIDFontMapping getCIDFont(String baseFont, PDFontDescriptor fontDescriptor,
-                              PDCIDSystemInfo cidSystemInfo);
+public interface FontMapper {
+  /**
+   * Finds a TrueType font with the given PostScript name, or a suitable substitute, or null.
+   *
+   * @param fontDescriptor FontDescriptor
+   */
+  FontMapping<TrueTypeFont> getTrueTypeFont(String baseFont, PDFontDescriptor fontDescriptor);
+
+  /**
+   * Finds a font with the given PostScript name, or a suitable substitute, or null. This allows
+   * any font to be substituted with a PFB, TTF or OTF.
+   *
+   * @param fontDescriptor the FontDescriptor of the font to find
+   */
+  FontMapping<FontBoxFont> getFontBoxFont(String baseFont, PDFontDescriptor fontDescriptor);
+
+  /**
+   * Finds a CFF CID-Keyed font with the given PostScript name, or a suitable substitute, or null.
+   * This method can also map CJK fonts via their CIDSystemInfo (ROS).
+   *
+   * @param fontDescriptor FontDescriptor
+   * @param cidSystemInfo  the CID system info, e.g. "Adobe-Japan1", if any.
+   */
+  CIDFontMapping getCIDFont(String baseFont, PDFontDescriptor fontDescriptor, PDCIDSystemInfo cidSystemInfo);
 }

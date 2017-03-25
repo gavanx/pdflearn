@@ -23,11 +23,9 @@ import org.apache.pdfbox.cos.COSBase;
  *
  * @author John Hewson
  */
-public abstract class PDSpecialColorSpace extends PDColorSpace
-{
-    @Override
-    public COSBase getCOSObject()
-    {
-        return array;
-    }
+public abstract class PDSpecialColorSpace extends PDColorSpace {
+  @Override
+  public COSBase getCOSObject() {
+    return array;
+  }
 }

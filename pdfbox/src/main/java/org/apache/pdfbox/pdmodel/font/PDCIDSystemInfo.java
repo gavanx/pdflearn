@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.pdmodel.font;
 
 import org.apache.pdfbox.cos.COSBase;
@@ -27,47 +26,39 @@ import org.apache.pdfbox.pdmodel.common.COSObjectable;
  *
  * @author John Hewson
  */
-public final class PDCIDSystemInfo implements COSObjectable
-{
-    private final COSDictionary dictionary;
+public final class PDCIDSystemInfo implements COSObjectable {
+  private final COSDictionary dictionary;
 
-    PDCIDSystemInfo(String registry, String ordering, int supplement)
-    {
-        dictionary = new COSDictionary();
-        dictionary.setString(COSName.REGISTRY, registry);
-        dictionary.setString(COSName.ORDERING, ordering);
-        dictionary.setInt(COSName.SUPPLEMENT, supplement);
-    }
-    
-    PDCIDSystemInfo(COSDictionary dictionary)
-    {
-        this.dictionary = dictionary;
-    }
+  PDCIDSystemInfo(String registry, String ordering, int supplement) {
+    dictionary = new COSDictionary();
+    dictionary.setString(COSName.REGISTRY, registry);
+    dictionary.setString(COSName.ORDERING, ordering);
+    dictionary.setInt(COSName.SUPPLEMENT, supplement);
+  }
 
-    public String getRegistry()
-    {
-        return dictionary.getNameAsString(COSName.REGISTRY);
-    }
+  PDCIDSystemInfo(COSDictionary dictionary) {
+    this.dictionary = dictionary;
+  }
 
-    public String getOrdering()
-    {
-        return dictionary.getNameAsString(COSName.ORDERING);
-    }
-    
-    public int getSupplement()
-    {
-        return dictionary.getInt(COSName.SUPPLEMENT);
-    }
+  public String getRegistry() {
+    return dictionary.getNameAsString(COSName.REGISTRY);
+  }
 
-    @Override
-    public COSBase getCOSObject()
-    {
-        return dictionary;
-    }
+  public String getOrdering() {
+    return dictionary.getNameAsString(COSName.ORDERING);
+  }
 
-    @Override
-    public String toString()
-    {
-        return getRegistry() + "-" + getOrdering() + "-" + getSupplement();
-    }
+  public int getSupplement() {
+    return dictionary.getInt(COSName.SUPPLEMENT);
+  }
+
+  @Override
+  public COSBase getCOSObject() {
+    return dictionary;
+  }
+
+  @Override
+  public String toString() {
+    return getRegistry() + "-" + getOrdering() + "-" + getSupplement();
+  }
 }

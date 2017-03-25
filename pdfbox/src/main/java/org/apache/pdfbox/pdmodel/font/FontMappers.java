@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.pdmodel.font;
 
 /**
@@ -22,37 +21,31 @@ package org.apache.pdfbox.pdmodel.font;
  *
  * @author John Hewson
  */
-public final class FontMappers
-{
-    private static FontMapper instance;
+public final class FontMappers {
+  private static FontMapper instance;
 
-    private FontMappers()
-    {
+  private FontMappers() {
+  }
+
+  // lazy thread safe singleton
+  private static class DefaultFontMapper {
+    private static final FontMapper INSTANCE = new FontMapperImpl();
+  }
+
+  /**
+   * Returns the singleton FontMapper instance.
+   */
+  public static FontMapper instance() {
+    if (instance == null) {
+      instance = DefaultFontMapper.INSTANCE;
     }
-    
-    // lazy thread safe singleton
-    private static class DefaultFontMapper
-    {
-        private static final FontMapper INSTANCE = new FontMapperImpl();
-    }
-    
-    /**
-     * Returns the singleton FontMapper instance.
-     */
-    public static FontMapper instance()
-    {
-        if (instance == null)
-        {
-            instance = DefaultFontMapper.INSTANCE;
-        }
-        return instance;
-    }
-    
-    /**
-     * Sets the singleton FontMapper instance.
-     */
-    public static synchronized void set(FontMapper fontMapper)
-    {
-        instance = fontMapper;
-    }
+    return instance;
+  }
+
+  /**
+   * Sets the singleton FontMapper instance.
+   */
+  public static synchronized void set(FontMapper fontMapper) {
+    instance = fontMapper;
+  }
 }

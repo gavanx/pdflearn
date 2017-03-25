@@ -29,65 +29,56 @@ import java.io.IOException;
  *
  * @author John Hewson
  */
-public final class PDJPXColorSpace extends PDColorSpace
-{
-    private final ColorSpace awtColorSpace;
+public final class PDJPXColorSpace extends PDColorSpace {
+  private final ColorSpace awtColorSpace;
 
-    /**
-     * Creates a new JPX color space from the given AWT color space.
-     * @param colorSpace AWT color space from a JPX image
-     */
-    public PDJPXColorSpace(ColorSpace colorSpace)
-    {
-        this.awtColorSpace = colorSpace;
-    }
+  /**
+   * Creates a new JPX color space from the given AWT color space.
+   *
+   * @param colorSpace AWT color space from a JPX image
+   */
+  public PDJPXColorSpace(ColorSpace colorSpace) {
+    this.awtColorSpace = colorSpace;
+  }
 
-    @Override
-    public String getName()
-    {
-        return "JPX";
-    }
+  @Override
+  public String getName() {
+    return "JPX";
+  }
 
-    @Override
-    public int getNumberOfComponents()
-    {
-        return awtColorSpace.getNumComponents();
-    }
+  @Override
+  public int getNumberOfComponents() {
+    return awtColorSpace.getNumComponents();
+  }
 
-    @Override
-    public float[] getDefaultDecode(int bitsPerComponent)
-    {
-        int n = getNumberOfComponents();
-        float[] decode = new float[n * 2];
-        for (int i = 0; i < n; i++)
-        {
-            decode[i * 2] = awtColorSpace.getMinValue(i);
-            decode[i * 2 + 1] = awtColorSpace.getMaxValue(i);
-        }
-        return decode;
+  @Override
+  public float[] getDefaultDecode(int bitsPerComponent) {
+    int n = getNumberOfComponents();
+    float[] decode = new float[n * 2];
+    for (int i = 0; i < n; i++) {
+      decode[i * 2] = awtColorSpace.getMinValue(i);
+      decode[i * 2 + 1] = awtColorSpace.getMaxValue(i);
     }
+    return decode;
+  }
 
-    @Override
-    public PDColor getInitialColor()
-    {
-        throw new UnsupportedOperationException("JPX color spaces don't support drawing");
-    }
+  @Override
+  public PDColor getInitialColor() {
+    throw new UnsupportedOperationException("JPX color spaces don't support drawing");
+  }
 
-    @Override
-    public float[] toRGB(float[] value)
-    {
-        throw new UnsupportedOperationException("JPX color spaces don't support drawing");
-    }
+  @Override
+  public float[] toRGB(float[] value) {
+    throw new UnsupportedOperationException("JPX color spaces don't support drawing");
+  }
 
-    @Override
-    public BufferedImage toRGBImage(WritableRaster raster) throws IOException
-    {
-        return toRGBImageAWT(raster, awtColorSpace);
-    }
+  @Override
+  public BufferedImage toRGBImage(WritableRaster raster) throws IOException {
+    return toRGBImageAWT(raster, awtColorSpace);
+  }
 
-    @Override
-    public COSBase getCOSObject()
-    {
-        throw new UnsupportedOperationException("JPX color spaces don't have COS objects");
-    }
+  @Override
+  public COSBase getCOSObject() {
+    throw new UnsupportedOperationException("JPX color spaces don't have COS objects");
+  }
 }

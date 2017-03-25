@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.pdmodel.font;
 
 import org.apache.fontbox.FontBoxFont;
@@ -26,29 +25,25 @@ import org.apache.fontbox.ttf.OpenTypeFont;
  *
  * @author John Hewson
  */
-public final class CIDFontMapping extends FontMapping<OpenTypeFont>
-{
-    private final FontBoxFont ttf;
+public final class CIDFontMapping extends FontMapping<OpenTypeFont> {
+  private final FontBoxFont ttf;
 
-    public CIDFontMapping(OpenTypeFont font, FontBoxFont fontBoxFont, boolean isFallback)
-    {
-        super(font, isFallback);
-        this.ttf = fontBoxFont;
-    }
+  public CIDFontMapping(OpenTypeFont font, FontBoxFont fontBoxFont, boolean isFallback) {
+    super(font, isFallback);
+    this.ttf = fontBoxFont;
+  }
 
-    /**
-     * Returns a TrueType font when isCIDFont() is true, otherwise null.
-     */
-    public FontBoxFont getTrueTypeFont()
-    {
-        return ttf;
-    }
+  /**
+   * Returns a TrueType font when isCIDFont() is true, otherwise null.
+   */
+  public FontBoxFont getTrueTypeFont() {
+    return ttf;
+  }
 
-    /**
-     * Returns true if this is a CID font.
-     */
-    public boolean isCIDFont()
-    {
-        return getFont() != null;
-    }
+  /**
+   * Returns true if this is a CID font.
+   */
+  public boolean isCIDFont() {
+    return getFont() != null;
+  }
 }

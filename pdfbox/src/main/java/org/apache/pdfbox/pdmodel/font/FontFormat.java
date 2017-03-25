@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.pdmodel.font;
 
 /**
@@ -22,20 +21,15 @@ package org.apache.pdfbox.pdmodel.font;
  *
  * @author John Hewson
  */
-public enum FontFormat
-{
-    /**
-     * TrueType font.
-     */
-    TTF,
-
-    /**
-     * OpenType font.
-     */
-    OTF,
-
-    /**
-     * Type 1 (binary) font.
-     */
-    PFB
+public enum FontFormat {
+  /**
+   * TrueType font.
+   */
+  TTF, /**
+   * OpenType font.
+   */
+  OTF, /**
+   * Type 1 (binary) font.
+   */
+  PFB
 }

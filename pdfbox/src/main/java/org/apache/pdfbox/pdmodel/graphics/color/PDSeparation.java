@@ -40,225 +40,197 @@ import org.apache.pdfbox.pdmodel.common.function.PDFunction;
  * @author Ben Litchfield
  * @author John Hewson
  */
-public class PDSeparation extends PDSpecialColorSpace
-{
-    private final PDColor initialColor = new PDColor(new float[] { 1 }, this);
+public class PDSeparation extends PDSpecialColorSpace {
+  private final PDColor initialColor = new PDColor(new float[]{1}, this);
+  // array indexes
+  private static final int COLORANT_NAMES = 1;
+  private static final int ALTERNATE_CS = 2;
+  private static final int TINT_TRANSFORM = 3;
+  // fields
+  private PDColorSpace alternateColorSpace = null;
+  private PDFunction tintTransform = null;
 
-    // array indexes
-    private static final int COLORANT_NAMES = 1;
-    private static final int ALTERNATE_CS = 2;
-    private static final int TINT_TRANSFORM = 3;
+  /**
+   * Creates a new Separation color space.
+   */
+  public PDSeparation() {
+    array = new COSArray();
+    array.add(COSName.SEPARATION);
+    array.add(COSName.getPDFName(""));
+    // add some placeholder
+    array.add(COSNull.NULL);
+    array.add(COSNull.NULL);
+  }
 
-    // fields
-    private PDColorSpace alternateColorSpace = null;
-    private PDFunction tintTransform = null;
+  /**
+   * Creates a new Separation color space from a PDF color space array.
+   *
+   * @param separation an array containing all separation information.
+   * @throws IOException if the color space or the function could not be created.
+   */
+  public PDSeparation(COSArray separation) throws IOException {
+    array = separation;
+    alternateColorSpace = PDColorSpace.create(array.getObject(ALTERNATE_CS));
+    tintTransform = PDFunction.create(array.getObject(TINT_TRANSFORM));
+  }
 
-    /**
-     * Creates a new Separation color space.
-     */
-    public PDSeparation()
-    {
-        array = new COSArray();
-        array.add(COSName.SEPARATION);
-        array.add(COSName.getPDFName(""));
-        // add some placeholder
-        array.add(COSNull.NULL);
-        array.add(COSNull.NULL);
+  @Override
+  public String getName() {
+    return COSName.SEPARATION.getName();
+  }
+
+  @Override
+  public int getNumberOfComponents() {
+    return 1;
+  }
+
+  @Override
+  public float[] getDefaultDecode(int bitsPerComponent) {
+    return new float[]{0, 1};
+  }
+
+  @Override
+  public PDColor getInitialColor() {
+    return initialColor;
+  }
+
+  @Override
+  public float[] toRGB(float[] value) throws IOException {
+    float[] altColor = tintTransform.eval(value);
+    return alternateColorSpace.toRGB(altColor);
+  }
+
+  //
+  // WARNING: this method is performance sensitive, modify with care!
+  //
+  @Override
+  public BufferedImage toRGBImage(WritableRaster raster) throws IOException {
+    if (alternateColorSpace instanceof PDLab) {
+      // PDFBOX-3622 - regular converter fails for Lab colorspaces
+      return toRGBImage2(raster);
     }
 
-    /**
-     * Creates a new Separation color space from a PDF color space array.
-     * @param separation an array containing all separation information.
-     * @throws IOException if the color space or the function could not be created.
-     */
-    public PDSeparation(COSArray separation) throws IOException
-    {
-        array = separation;
-        alternateColorSpace = PDColorSpace.create(array.getObject(ALTERNATE_CS));
-        tintTransform = PDFunction.create(array.getObject(TINT_TRANSFORM));
-    }
+    // use the tint transform to convert the sample into
+    // the alternate color space (this is usually 1:many)
+    WritableRaster altRaster = Raster.createBandedRaster(DataBuffer.TYPE_BYTE, raster.getWidth(), raster.getHeight(), alternateColorSpace.getNumberOfComponents(), new Point(0, 0));
 
-    @Override
-    public String getName()
-    {
-        return COSName.SEPARATION.getName();
-    }
+    int numAltComponents = alternateColorSpace.getNumberOfComponents();
+    int width = raster.getWidth();
+    int height = raster.getHeight();
+    float[] samples = new float[1];
 
-    @Override
-    public int getNumberOfComponents()
-    {
-        return 1;
-    }
-
-    @Override
-    public float[] getDefaultDecode(int bitsPerComponent)
-    {
-        return new float[] { 0, 1 };
-    }
-
-    @Override
-    public PDColor getInitialColor()
-    {
-        return initialColor;
-    }
-
-    @Override
-    public float[] toRGB(float[] value) throws IOException
-    {
-        float[] altColor = tintTransform.eval(value);
-        return alternateColorSpace.toRGB(altColor);
-    }
-
-    //
-    // WARNING: this method is performance sensitive, modify with care!
-    //
-    @Override
-    public BufferedImage toRGBImage(WritableRaster raster) throws IOException
-    {
-        if (alternateColorSpace instanceof PDLab)
-        {
-            // PDFBOX-3622 - regular converter fails for Lab colorspaces
-            return toRGBImage2(raster);
+    Map<Integer, int[]> calculatedValues = new HashMap<Integer, int[]>();
+    Integer hash;
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        raster.getPixel(x, y, samples);
+        int[] alt = calculatedValues.get(hash = Float.floatToIntBits(samples[0]));
+        if (alt == null) {
+          alt = new int[numAltComponents];
+          tintTransform(samples, alt);
+          calculatedValues.put(hash, alt);
         }
-        
-        // use the tint transform to convert the sample into
-        // the alternate color space (this is usually 1:many)
-        WritableRaster altRaster = Raster.createBandedRaster(DataBuffer.TYPE_BYTE,
-                raster.getWidth(), raster.getHeight(),
-                alternateColorSpace.getNumberOfComponents(),
-                new Point(0, 0));
+        altRaster.setPixel(x, y, alt);
+      }
+    }
 
-        int numAltComponents = alternateColorSpace.getNumberOfComponents();
-        int width = raster.getWidth();
-        int height = raster.getHeight();
-        float[] samples = new float[1];
+    // convert the alternate color space to RGB
+    return alternateColorSpace.toRGBImage(altRaster);
+  }
 
-        Map<Integer, int[]> calculatedValues = new HashMap<Integer, int[]>();
-        Integer hash;
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                raster.getPixel(x, y, samples);
-                int[] alt = calculatedValues.get(hash = Float.floatToIntBits(samples[0]));
-                if (alt == null)
-                {
-                    alt = new int[numAltComponents];
-                    tintTransform(samples, alt);
-                    calculatedValues.put(hash, alt);
-                }                
-                altRaster.setPixel(x, y, alt);
-            }
+  // converter that works without using super implementation of toRGBImage()
+  private BufferedImage toRGBImage2(WritableRaster raster) throws IOException {
+    int width = raster.getWidth();
+    int height = raster.getHeight();
+    BufferedImage rgbImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    WritableRaster rgbRaster = rgbImage.getRaster();
+    float[] samples = new float[1];
+
+    Map<Integer, int[]> calculatedValues = new HashMap<Integer, int[]>();
+    Integer hash;
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        raster.getPixel(x, y, samples);
+        int[] rgb = calculatedValues.get(hash = Float.floatToIntBits(samples[0]));
+        if (rgb == null) {
+          samples[0] /= 255;
+          float[] altColor = tintTransform.eval(samples);
+          float[] fltab = alternateColorSpace.toRGB(altColor);
+          rgb = new int[3];
+          rgb[0] = (int) (fltab[0] * 255);
+          rgb[1] = (int) (fltab[1] * 255);
+          rgb[2] = (int) (fltab[2] * 255);
+          calculatedValues.put(hash, rgb);
         }
-
-        // convert the alternate color space to RGB
-        return alternateColorSpace.toRGBImage(altRaster);
+        rgbRaster.setPixel(x, y, rgb);
+      }
     }
+    return rgbImage;
+  }
 
-    // converter that works without using super implementation of toRGBImage()
-    private BufferedImage toRGBImage2(WritableRaster raster) throws IOException
-    {
-        int width = raster.getWidth();
-        int height = raster.getHeight();
-        BufferedImage rgbImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        WritableRaster rgbRaster = rgbImage.getRaster();
-        float[] samples = new float[1];
-
-        Map<Integer, int[]> calculatedValues = new HashMap<Integer, int[]>();
-        Integer hash;
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                raster.getPixel(x, y, samples);
-                int[] rgb = calculatedValues.get(hash = Float.floatToIntBits(samples[0]));
-                if (rgb == null)
-                {
-                    samples[0] /= 255;
-                    float[] altColor = tintTransform.eval(samples);
-                    float[] fltab = alternateColorSpace.toRGB(altColor);
-                    rgb = new int[3];
-                    rgb[0] = (int) (fltab[0] * 255);
-                    rgb[1] = (int) (fltab[1] * 255);
-                    rgb[2] = (int) (fltab[2] * 255);
-                    calculatedValues.put(hash, rgb);
-                }
-                rgbRaster.setPixel(x, y, rgb);
-            }
-        }
-        return rgbImage;
+  protected void tintTransform(float[] samples, int[] alt) throws IOException {
+    samples[0] /= 255; // 0..1
+    float[] result = tintTransform.eval(samples);
+    for (int s = 0; s < alt.length; s++) {
+      // scale to 0..255
+      alt[s] = (int) (result[s] * 255);
     }
+  }
 
-    protected void tintTransform(float[] samples, int[] alt) throws IOException
-    {
-        samples[0] /= 255; // 0..1
-        float[] result = tintTransform.eval(samples);
-        for (int s = 0; s < alt.length; s++)
-        {
-            // scale to 0..255
-            alt[s] = (int) (result[s] * 255);
-        }
-    }
+  /**
+   * Returns the colorant name.
+   *
+   * @return the name of the colorant
+   */
+  public PDColorSpace getAlternateColorSpace() {
+    return alternateColorSpace;
+  }
 
-    /**
-     * Returns the colorant name.
-     * @return the name of the colorant
-     */
-    public PDColorSpace getAlternateColorSpace()
-    {
-       return alternateColorSpace;
-    }
+  /**
+   * Returns the colorant name.
+   *
+   * @return the name of the colorant
+   */
+  public String getColorantName() {
+    COSName name = (COSName) array.getObject(COLORANT_NAMES);
+    return name.getName();
+  }
 
-    /**
-     * Returns the colorant name.
-     * @return the name of the colorant
-     */
-    public String getColorantName()
-    {
-        COSName name = (COSName)array.getObject(COLORANT_NAMES);
-        return name.getName();
-    }
+  /**
+   * Sets the colorant name.
+   *
+   * @param name the name of the colorant
+   */
+  public void setColorantName(String name) {
+    array.set(1, COSName.getPDFName(name));
+  }
 
-    /**
-     * Sets the colorant name.
-     * @param name the name of the colorant
-     */
-    public void setColorantName(String name)
-    {
-        array.set(1, COSName.getPDFName(name));
+  /**
+   * Sets the alternate color space.
+   *
+   * @param colorSpace The alternate color space.
+   */
+  public void setAlternateColorSpace(PDColorSpace colorSpace) {
+    alternateColorSpace = colorSpace;
+    COSBase space = null;
+    if (colorSpace != null) {
+      space = colorSpace.getCOSObject();
     }
+    array.set(ALTERNATE_CS, space);
+  }
 
-    /**
-     * Sets the alternate color space.
-     * @param colorSpace The alternate color space.
-     */
-    public void setAlternateColorSpace(PDColorSpace colorSpace)
-    {
-        alternateColorSpace = colorSpace;
-        COSBase space = null;
-        if (colorSpace != null)
-        {
-            space = colorSpace.getCOSObject();
-        }
-        array.set(ALTERNATE_CS, space);
-    }
+  /**
+   * Sets the tint transform function.
+   *
+   * @param tint the tint transform function
+   */
+  public void setTintTransform(PDFunction tint) {
+    tintTransform = tint;
+    array.set(TINT_TRANSFORM, tint);
+  }
 
-    /**
-     * Sets the tint transform function.
-     * @param tint the tint transform function
-     */
-    public void setTintTransform(PDFunction tint)
-    {
-        tintTransform = tint;
-        array.set(TINT_TRANSFORM, tint);
-    }
-
-    @Override
-    public String toString()
-    {
-        return getName() + "{" +
-                "\"" + getColorantName() + "\"" + " " +
-                alternateColorSpace.getName() + " " +
-                tintTransform + "}";
-    }
+  @Override
+  public String toString() {
+    return getName() + "{" + "\"" + getColorantName() + "\"" + " " + alternateColorSpace.getName() + " " + tintTransform + "}";
+  }
 }

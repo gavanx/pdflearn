@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.pdmodel.graphics.form;
 
 import org.apache.pdfbox.cos.COSStream;
@@ -27,33 +26,32 @@ import org.apache.pdfbox.pdmodel.common.PDStream;
  *
  * @author John Hewson
  */
-public class PDTransparencyGroup extends PDFormXObject
-{
-    /**
-     * Creates a Transparency Group for reading.
-     * @param stream The XObject stream
-     */
-    public PDTransparencyGroup(PDStream stream)
-    {
-        super(stream);
-    }
+public class PDTransparencyGroup extends PDFormXObject {
+  /**
+   * Creates a Transparency Group for reading.
+   *
+   * @param stream The XObject stream
+   */
+  public PDTransparencyGroup(PDStream stream) {
+    super(stream);
+  }
 
-    /**
-     * Creates a Transparency Group for reading.
-     * @param stream The XObject stream
-     */
-    public PDTransparencyGroup(COSStream stream, ResourceCache cache)
-    {
-        super(stream, cache);
-    }    
+  /**
+   * Creates a Transparency Group for reading.
+   *
+   * @param stream The XObject stream
+   */
+  public PDTransparencyGroup(COSStream stream, ResourceCache cache) {
+    super(stream, cache);
+  }
 
-    /**
-     * Creates a Transparency Group for writing, in the given document.
-     * @param document The current document
-     */
-    public PDTransparencyGroup(PDDocument document)
-    {
-        super(document);
-        // todo: set mandatory fields
-    }
+  /**
+   * Creates a Transparency Group for writing, in the given document.
+   *
+   * @param document The current document
+   */
+  public PDTransparencyGroup(PDDocument document) {
+    super(document);
+    // todo: set mandatory fields
+  }
 }

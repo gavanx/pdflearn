@@ -23,6 +23,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
+
 import org.apache.pdfbox.cos.COSName;
 
 /**
@@ -32,85 +33,71 @@ import org.apache.pdfbox.cos.COSName;
  * @author Ben Litchfield
  * @author John Hewson
  */
-public final class PDDeviceRGB extends PDDeviceColorSpace
-{
-    /**  This is the single instance of this class. */
-    public static final PDDeviceRGB INSTANCE = new PDDeviceRGB();
-    
-    private final PDColor initialColor = new PDColor(new float[] { 0, 0, 0 }, this);
-    private volatile ColorSpace awtColorSpace;
-    
-    private PDDeviceRGB()
-    {
-    }
+public final class PDDeviceRGB extends PDDeviceColorSpace {
+  /** This is the single instance of this class. */
+  public static final PDDeviceRGB INSTANCE = new PDDeviceRGB();
+  private final PDColor initialColor = new PDColor(new float[]{0, 0, 0}, this);
+  private volatile ColorSpace awtColorSpace;
 
-    /**
-     * Lazy setting of the AWT color space due to JDK race condition.
-     */
-    private void init()
-    {
-        // no need to synchronize this check as it is atomic
-        if (awtColorSpace != null)
-        {
-            return;
-        }
-        synchronized (this)
-        {
-            // we might have been waiting for another thread, so check again
-            if (awtColorSpace != null)
-            {
-                return;
-            }
-            awtColorSpace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
-            
-            // there is a JVM bug which results in a CMMException which appears to be a race
-            // condition caused by lazy initialization of the color transform, so we perform
-            // an initial color conversion while we're still synchronized, see PDFBOX-2184
-            awtColorSpace.toRGB(new float[] { 0, 0, 0, 0 });
-        }
-    }
-    
-    @Override
-    public String getName()
-    {
-        return COSName.DEVICERGB.getName();
-    }
+  private PDDeviceRGB() {
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getNumberOfComponents()
-    {
-        return 3;
+  /**
+   * Lazy setting of the AWT color space due to JDK race condition.
+   */
+  private void init() {
+    // no need to synchronize this check as it is atomic
+    if (awtColorSpace != null) {
+      return;
     }
+    synchronized (this) {
+      // we might have been waiting for another thread, so check again
+      if (awtColorSpace != null) {
+        return;
+      }
+      awtColorSpace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
 
-    @Override
-    public float[] getDefaultDecode(int bitsPerComponent)
-    {
-        return new float[] { 0, 1, 0, 1, 0, 1 };
+      // there is a JVM bug which results in a CMMException which appears to be a race
+      // condition caused by lazy initialization of the color transform, so we perform
+      // an initial color conversion while we're still synchronized, see PDFBOX-2184
+      awtColorSpace.toRGB(new float[]{0, 0, 0, 0});
     }
+  }
 
-    @Override
-    public PDColor getInitialColor()
-    {
-        return initialColor;
-    }
+  @Override
+  public String getName() {
+    return COSName.DEVICERGB.getName();
+  }
 
-    @Override
-    public float[] toRGB(float[] value)
-    {
-        init();
-        return awtColorSpace.toRGB(value);
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getNumberOfComponents() {
+    return 3;
+  }
 
-    @Override
-    public BufferedImage toRGBImage(WritableRaster raster) throws IOException
-    {
-        init();
-        ColorModel colorModel = new ComponentColorModel(awtColorSpace,
-                false, false, Transparency.OPAQUE, raster.getDataBuffer().getDataType());
+  @Override
+  public float[] getDefaultDecode(int bitsPerComponent) {
+    return new float[]{0, 1, 0, 1, 0, 1};
+  }
 
-        return new BufferedImage(colorModel, raster, false, null);
-    }
+  @Override
+  public PDColor getInitialColor() {
+    return initialColor;
+  }
+
+  @Override
+  public float[] toRGB(float[] value) {
+    init();
+    return awtColorSpace.toRGB(value);
+  }
+
+  @Override
+  public BufferedImage toRGBImage(WritableRaster raster) throws IOException {
+    init();
+    ColorModel colorModel = new ComponentColorModel(awtColorSpace, false, false, Transparency.OPAQUE, raster.getDataBuffer().getDataType());
+
+    return new BufferedImage(colorModel, raster, false, null);
+  }
 }

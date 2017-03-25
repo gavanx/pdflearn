@@ -25,6 +25,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ColorModel;
 import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.util.Matrix;
@@ -32,43 +33,34 @@ import org.apache.pdfbox.util.Matrix;
 /**
  * AWT PaintContext for Gouraud Triangle Mesh (Type 4) shading.
  */
-class Type4ShadingPaint implements Paint
-{
-    private static final Log LOG = LogFactory.getLog(Type4ShadingPaint.class);
+class Type4ShadingPaint implements Paint {
+  private static final Log LOG = LogFactory.getLog(Type4ShadingPaint.class);
+  private final PDShadingType4 shading;
+  private final Matrix matrix;
 
-    private final PDShadingType4 shading;
-    private final Matrix matrix;
+  /**
+   * Constructor.
+   *
+   * @param shading the shading resources
+   * @param matrix  the pattern matrix concatenated with that of the parent content stream
+   */
+  Type4ShadingPaint(PDShadingType4 shading, Matrix matrix) {
+    this.shading = shading;
+    this.matrix = matrix;
+  }
 
-    /**
-     * Constructor.
-     *
-     * @param shading the shading resources
-     * @param matrix the pattern matrix concatenated with that of the parent content stream
-     */
-    Type4ShadingPaint(PDShadingType4 shading, Matrix matrix)
-    {
-        this.shading = shading;
-        this.matrix = matrix;
+  @Override
+  public int getTransparency() {
+    return 0;
+  }
+
+  @Override
+  public PaintContext createContext(ColorModel cm, Rectangle deviceBounds, Rectangle2D userBounds, AffineTransform xform, RenderingHints hints) {
+    try {
+      return new Type4ShadingContext(shading, cm, xform, matrix, deviceBounds);
+    } catch (IOException e) {
+      LOG.error("An error occurred while painting", e);
+      return new Color(0, 0, 0, 0).createContext(cm, deviceBounds, userBounds, xform, hints);
     }
-
-    @Override
-    public int getTransparency()
-    {
-        return 0;
-    }
-
-    @Override
-    public PaintContext createContext(ColorModel cm, Rectangle deviceBounds, Rectangle2D userBounds,
-                                      AffineTransform xform, RenderingHints hints)
-    {
-        try
-        {
-            return new Type4ShadingContext(shading, cm, xform, matrix, deviceBounds);
-        }
-        catch (IOException e)
-        {
-            LOG.error("An error occurred while painting", e);
-            return new Color(0, 0, 0, 0).createContext(cm, deviceBounds, userBounds, xform, hints);
-        }
-    }
+  }
 }

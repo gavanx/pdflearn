@@ -22,33 +22,26 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 import org.junit.Test;
 
-
 import static org.junit.Assert.assertEquals;
 
 /**
  * Test for the PDAnnotation classes.
- *
  */
-public class PDAnnotationTest
-{
+public class PDAnnotationTest {
+  @Test
+  public void createDefaultWidgetAnnotation() {
+    PDAnnotation annotation = new PDAnnotationWidget();
+    assertEquals(COSName.ANNOT, annotation.getCOSObject().getItem(COSName.TYPE));
+    assertEquals(PDAnnotationWidget.SUB_TYPE, annotation.getCOSObject().getNameAsString(COSName.SUBTYPE));
+  }
 
-    @Test
-    public void createDefaultWidgetAnnotation()
-    {
-        PDAnnotation annotation = new PDAnnotationWidget();
-        assertEquals(COSName.ANNOT, annotation.getCOSObject().getItem(COSName.TYPE));
-        assertEquals(PDAnnotationWidget.SUB_TYPE, annotation.getCOSObject().getNameAsString(COSName.SUBTYPE));
-    }
-
-    @Test
-    public void createWidgetAnnotationFromField()
-    {
-        PDDocument document = new PDDocument();
-        PDAcroForm acroForm = new PDAcroForm(document);
-        PDTextField textField = new PDTextField(acroForm);
-        PDAnnotation annotation = textField.getWidgets().get(0);
-        assertEquals(COSName.ANNOT, annotation.getCOSObject().getItem(COSName.TYPE));
-        assertEquals(PDAnnotationWidget.SUB_TYPE, annotation.getCOSObject().getNameAsString(COSName.SUBTYPE));
-    }
-
+  @Test
+  public void createWidgetAnnotationFromField() {
+    PDDocument document = new PDDocument();
+    PDAcroForm acroForm = new PDAcroForm(document);
+    PDTextField textField = new PDTextField(acroForm);
+    PDAnnotation annotation = textField.getWidgets().get(0);
+    assertEquals(COSName.ANNOT, annotation.getCOSObject().getItem(COSName.TYPE));
+    assertEquals(PDAnnotationWidget.SUB_TYPE, annotation.getCOSObject().getNameAsString(COSName.SUBTYPE));
+  }
 }

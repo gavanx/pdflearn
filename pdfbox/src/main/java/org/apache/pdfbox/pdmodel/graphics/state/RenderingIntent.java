@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.pdmodel.graphics.state;
 
 /**
@@ -22,63 +21,46 @@ package org.apache.pdfbox.pdmodel.graphics.state;
  *
  * @author John Hewson
  */
-public enum RenderingIntent
-{
-    /**
-     * Absolute Colorimetric.
-     */
-    ABSOLUTE_COLORIMETRIC("AbsoluteColorimetric"),
+public enum RenderingIntent {
+  /**
+   * Absolute Colorimetric.
+   */
+  ABSOLUTE_COLORIMETRIC("AbsoluteColorimetric"), /**
+   * Relative Colorimetric.
+   */
+  RELATIVE_COLORIMETRIC("RelativeColorimetric"), /**
+   * Saturation.
+   */
+  SATURATION("Saturation"), /**
+   * Perceptual.
+   */
+  PERCEPTUAL("Perceptual");
 
-    /**
-     * Relative Colorimetric.
-     */
-    RELATIVE_COLORIMETRIC("RelativeColorimetric"),
-
-    /**
-     * Saturation.
-     */
-    SATURATION("Saturation"),
-
-    /**
-     * Perceptual.
-     */
-    PERCEPTUAL("Perceptual");
-
-    public static RenderingIntent fromString(String value)
-    {
-        if (value.equals("AbsoluteColorimetric"))
-        {
-            return ABSOLUTE_COLORIMETRIC;
-        }
-        else if (value.equals("RelativeColorimetric"))
-        {
-          return RELATIVE_COLORIMETRIC;
-        }
-        else if (value.equals("Saturation"))
-        {
-          return SATURATION;
-        }
-        else if (value.equals("Perceptual"))
-        {
-          return PERCEPTUAL;
-        }
-        // "If a conforming reader does not recognize the specified name, 
-        // it shall use the RelativeColorimetric intent by default."
-        return RELATIVE_COLORIMETRIC;
+  public static RenderingIntent fromString(String value) {
+    if (value.equals("AbsoluteColorimetric")) {
+      return ABSOLUTE_COLORIMETRIC;
+    } else if (value.equals("RelativeColorimetric")) {
+      return RELATIVE_COLORIMETRIC;
+    } else if (value.equals("Saturation")) {
+      return SATURATION;
+    } else if (value.equals("Perceptual")) {
+      return PERCEPTUAL;
     }
+    // "If a conforming reader does not recognize the specified name,
+    // it shall use the RelativeColorimetric intent by default."
+    return RELATIVE_COLORIMETRIC;
+  }
 
-    private final String value;
+  private final String value;
 
-    RenderingIntent(String value)
-    {
-        this.value = value;
-    }
+  RenderingIntent(String value) {
+    this.value = value;
+  }
 
-    /**
-     * Returns the string value, as used in a PDF file.
-     */
-    public String stringValue()
-    {
-        return value;
-    }
+  /**
+   * Returns the string value, as used in a PDF file.
+   */
+  public String stringValue() {
+    return value;
+  }
 }

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.pdfbox.pdmodel.interactive.annotation;
 
 import org.apache.pdfbox.cos.COSStream;
@@ -28,25 +27,22 @@ import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
  * @author Ben Litchfield
  * @author John Hewson
  */
-public class PDAppearanceStream extends PDFormXObject
-{
-    /**
-     * Creates a Form XObject for reading.
-     * 
-     * @param stream The XObject stream
-     */
-    public PDAppearanceStream(COSStream stream)
-    {
-        super(stream);
-    }
+public class PDAppearanceStream extends PDFormXObject {
+  /**
+   * Creates a Form XObject for reading.
+   *
+   * @param stream The XObject stream
+   */
+  public PDAppearanceStream(COSStream stream) {
+    super(stream);
+  }
 
-    /**
-     * Creates a Form Image XObject for writing, in the given document.
-     * 
-     * @param document The current document
-     */
-    public PDAppearanceStream(PDDocument document)
-    {
-        super(document);
-    }
+  /**
+   * Creates a Form Image XObject for writing, in the given document.
+   *
+   * @param document The current document
+   */
+  public PDAppearanceStream(PDDocument document) {
+    super(document);
+  }
 }
