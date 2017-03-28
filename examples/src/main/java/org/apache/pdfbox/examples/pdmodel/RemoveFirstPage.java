@@ -26,59 +26,44 @@ import java.io.IOException;
  *
  * @author Ben Litchfield
  */
-public final class RemoveFirstPage
-{
-    private RemoveFirstPage()
-    {
-        //utility class, should not be instantiated.
-    }
+public final class RemoveFirstPage {
+  private RemoveFirstPage() {
+    //utility class, should not be instantiated.
+  }
 
-    /**
-     * This will print the documents data.
-     *
-     * @param args The command line arguments.
-     *
-     * @throws IOException If there is an error parsing the document.
-     */
-    public static void main( String[] args ) throws IOException
-    {
-        if( args.length != 2 )
-        {
-            usage();
+  /**
+   * This will print the documents data.
+   *
+   * @param args The command line arguments.
+   * @throws IOException If there is an error parsing the document.
+   */
+  public static void main(String[] args) throws IOException {
+    if (args.length != 2) {
+      usage();
+    } else {
+      PDDocument document = null;
+      try {
+        document = PDDocument.load(new File(args[0]));
+        if (document.isEncrypted()) {
+          throw new IOException("Encrypted documents are not supported for this example");
         }
-        else
-        {
-            PDDocument document = null;
-            try
-            {
-                document = PDDocument.load( new File(args[0]) );
-                if( document.isEncrypted() )
-                {
-                    throw new IOException( "Encrypted documents are not supported for this example" );
-                }
-                if( document.getNumberOfPages() <= 1 )
-                {
-                    throw new IOException( "Error: A PDF document must have at least one page, " +
-                                           "cannot remove the last page!");
-                }
-                document.removePage( 0 );
-                document.save( args[1] );
-            }
-            finally
-            {
-                if( document != null )
-                {
-                    document.close();
-                }
-            }
+        if (document.getNumberOfPages() <= 1) {
+          throw new IOException("Error: A PDF document must have at least one page, " + "cannot remove the last page!");
         }
+        document.removePage(0);
+        document.save(args[1]);
+      } finally {
+        if (document != null) {
+          document.close();
+        }
+      }
     }
+  }
 
-    /**
-     * This will print the usage for this document.
-     */
-    private static void usage()
-    {
-        System.err.println( "Usage: java " + RemoveFirstPage.class.getName() + " <input-pdf> <output-pdf>" );
-    }
+  /**
+   * This will print the usage for this document.
+   */
+  private static void usage() {
+    System.err.println("Usage: java " + RemoveFirstPage.class.getName() + " <input-pdf> <output-pdf>");
+  }
 }
